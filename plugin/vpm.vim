@@ -634,7 +634,7 @@ endfunction
 " }
 " g:vpm.view {
 
-function! g:vpm.view.init() dict "{
+function! g:vpm.view.init() "{
 
  call self.zoom.init()
  call self.line.init()
@@ -758,25 +758,16 @@ function! g:vpm.view.line.top()        dict "{
   let currtab = g:vpm.data.curr.item('t')
 
   for tab in g:vpm.data.curr.list('t')
-
     if tab.name == currtab.name
-
       let line .= '%#VPMTabSel#'
-
+      let line .= '['.tab.name.']'
     else
-
       let line .= '%#VPMTab#'
-
+      let line .= ' '.tab.name.' '
     endif
-
-    let line .= ' '
-    let line .= tab.name
-    let line .= ' '
-
   endfor
 
   let line .= '%#VPMTabFill#'
-
 
   return line
 endfunction
@@ -786,29 +777,21 @@ function! g:vpm.view.line.bot()        dict "{
 
   let currbuf = g:vpm.data.curr.item('b')
 
-  let line .= '%#VPMT#'
-  let line .= ' '
-  let line .= g:vpm.data.curr.item('t').name
-  let line .= ' '
+  " Show selected tab
+  " let line .= '%#VPMT#'
+  " let line .= ' '
+  " let line .= g:vpm.data.curr.item('t').name
 
   let currbuf = g:vpm.data.curr.item('b')
 
   for buf in g:vpm.data.curr.list('b')
-
     if buf.name == currbuf.name
-
       let line .= '%#VPMBufSel#'
-
+      let line .= '['.buf.name.']'
     else
-
       let line .= '%#VPMBuf#'
-
+      let line .= ' '.buf.name.' '
     endif
-
-    let line .= ' '
-    let line .= buf.name
-    let line .= ' '
-
   endfor
 
   let line .= '%#VPMbufFill#'
