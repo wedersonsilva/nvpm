@@ -1,0 +1,317 @@
+--------------------------------------------------------------------------------
+|tasks-issues-todos|                                                           {
+
+|Current-Task|
+[ x ] *feat-menu*
+
+|Todo|
+[   ] *feat-view*
+[   ] *feat-view-highlight*
+[   ] *feat-remember*
+[   ] *feat-save*
+[   ] *feat-edit-layout*
+[   ] *feat-move*
+[   ] *feat-close*
+[   ] *feat-reaload*
+[   ] *feat-events*
+[   ] *feat-vim-bufferlist*
+[   ] *study-curly-braces-names*
+[   ] *study-vim-lang*
+[   ] *study-internal-variables*
+[   ] *test-startup-time*
+[   ] *intergration-tmux*
+[   ] *integration-plugins*
+[   ] *choose-meaniful-names*
+
+|Issues|
+[ i ] *zoom-toggle-curr-edit*
+[ i ] *insert-symlink-in-JSON*
+[ s ] *list-out-of-bound-json-retrieve-pos*
+
+|Done|
+[ * ] *feat-term*
+[ * ] *feat-view-lines-toggle*
+
+}
+--------------------------------------------------------------------------------
+|Meaning-of-marks-inside-[]|                                                   {
+
+[ s ] *solved-issue*
+[ x ] *current-task*
+[   ] *todo*
+[ * ] *done*
+[ ? ] *done-but-unstable*
+[ i ] *issue*
+
+}
+--------------------------------------------------------------------------------
+|TAGS|                                                                         {
+
+Jump by pressing `*` with cursor on top of it.
+Go back and fourth with `n` and `N`
+To unhighlight it, perform `:set nohlsearch`
+
+- |JSON|
+- |VPMLoadLayout|
+
+}
+--------------------------------------------------------------------------------
+|Descriptions|                                                                 {
+
+--------------------------------------------------------------------------------
+*insert-symlink-in-JSON*                                                       {
+
+`05 May 2019`
+
+I suspect  that  the insertion of symlinks into JSON file is
+not  working.  It's  somehow  messing  with the list cycling
+operation.
+
+}
+--------------------------------------------------------------------------------
+*feat-move*                                                                    {
+
+`20 Jun 2018`
+Move  positions  of  Workspaces,  Tabs  and Buffers. It must
+allow     one     to     use     the    mouse    as    well.
+
+
+}
+--------------------------------------------------------------------------------
+*feat-term*                                                                    {
+
+`20 Jun 2018`
+
+This  features methods regarding Vim's terminal window mode.
+It is supposed to allow one to open the terminal, controlled
+by  |JSON|  input. This falls into the *type* == *term* , in
+the  dictionary  of VPM's bufferlist. Also, a quick terminal
+window  can  be  open  by  the command *VPMTerminal* , which
+opens        it        in       the       main       window.
+
+Another  point  is the *cwd* and *cmd* capabilities. In this
+case,  the  user can put, into the |JSON|, the directory and
+the command that is supposed to be changed to and run, after
+the  buffer is created. Note the scope of this feature is at
+buffer             level.             An            example:
+
+{
+  'name' : 'docpython'       ,
+  'cwd'  : '<path-to-pydoc>' ,
+  'type' : 'term'            ,
+  'cmd'  : 'ranger'          ,
+}
+
+the    'path'   attribute   is   automaticaly   pointed   to
+the      address      of      the      terminal     emulator
+created                        by                       Vim.
+
+}
+--------------------------------------------------------------------------------
+*feat-view-highlight*                                                          {
+
+`20 Jun 2018`
+Import highlight settings from |JSON| file.
+
+}
+--------------------------------------------------------------------------------
+*feat-close*                                                                   {
+
+`14 Jun 2018`
+Manage     closing     operations     of     buffers     and
+integrate   this  with  other  movements  like  saving.  For
+example,   if   I   close  one  buffer,  I  would  have  the
+oportunity   to  save  the  current  layout  into  the  same
+|JSON|           that           I           used          to
+load                       the                       layout.
+
+}
+--------------------------------------------------------------------------------
+*feat-view-lines-toggle*                                                       {
+
+`20 Jun 2018`
+Toggle visibility of top and bottom lines.
+
+}
+--------------------------------------------------------------------------------
+*feat-remember*                                                                {
+
+`13 Jun 2018`
+Remembers    where    the   cursor   position   was   before
+switching     to     the    buffer    at    hand.    Somehow
+the         cursor         doesn't         stay         put.
+
+This  information  can  be  stored  inside  the  buffer list
+dictionary  and  then  use  Vim's  cursor()  function to set
+its  position.  Make tests to see if this operation is slow,
+and  if  it  is,  try  to  measure  time  interval  in which
+the                          user                         is
+pressing                                               keys.
+
+}
+--------------------------------------------------------------------------------
+*feat-view*                                                                    {
+
+`15 Jun 2018`
+This   feature   is   regarding   the  visual  feedback  for
+the  many  operations  of  vpm.  It should show not only the
+current  buffer,  but  also,  at least, the list of tabs and
+buffers.    It    can   be   done   by   setting   the   tab
+and                                              statusline.
+
+Another  possibility  is  to  control  the  content  of  the
+surrounding   buffers  in  zoom  mode.  In  this  case,  the
+list  of  tabs  and  buffers  could be shown, for example in
+the   top  buffer.  My  only  concern  for  this  is  to  be
+slower       than       setting       the       tab      and
+status                     lines                    instead.
+
+}
+--------------------------------------------------------------------------------
+*feat-menu*                                                                    {
+
+`?? Jun 2018`
+There   is   this  other  feature  that  I  really  want  to
+implement.  A main menu that would be loaded into the center
+buffer  in zoom mode, with some kind of overview of not only
+operations  that  could  trigger  functions,  but  also  the
+possibility        of        showing       the       current
+status              of              vpm's             lists.
+
+This   idea   is   not  really  mine.  I  got  it  from  the
+`Tagbar`  and  `NERDTree`  plugins.  When  you trigger these
+plugins,  they  open  a  new  buffer  where you have special
+keybindings   that   trigger   specific   functions  in  the
+plugin.  I  think  this  is  done  with  `autocmd`  set  for
+specific    buffer    names.    Tagbar   uses   names   like
+*__Tagbar__* . 
+
+Notes:
+
+1.    Check    autocmd    at   CursorMoved   or   CursorHold
+events        for        checktime        and       autoread
+
+2.    Make   autocmd   from   *1.*   update   one   of   the
+extreme         buffers         in         zoom         mode
+
+}
+--------------------------------------------------------------------------------
+*feat-vim-bufferlist*                                                          {
+
+`13 Jun 2018`
+Management   of   buffers   opened   by   the   user   using
+Vim's   builtin   buffer   creation   methods   like:  badd,
+new, tabnew, edit, split, etc.
+
+Study   about   Vim's   buffer,   window   and   tab  lists.
+
+}
+--------------------------------------------------------------------------------
+*feat-events*                                                                  {
+
+`13 Jun 2018`
+Management  of  events  caused  by  vpm's  command  API. All
+the   movements   need  to  be  registered  somewhere  (`vpm
+dict?`)     in     order    to    be    used    later    on.
+
+}
+--------------------------------------------------------------------------------
+*feat-save*                                                                    {
+
+`14 Jun 2018`
+`Save changes in vpm's list to files`
+When  performing  changes  in  each  buffer,  these  changes
+will   be   lost  if  one  cycle  to  another  buffer.  This
+can  be  prevented  if  `set hidden` is done by the user. In
+this  case,  if  I  suddenly try to close a buffer, Vim will
+report  an  error  and ask you to save all buffers that have
+changes,    and    then   it   will   jump   to   the   next
+modified     buffer     -     in    Vim's    buffer    list.
+
+Instead,       the       behaviour       I      want      is
+to      manage     the     saving     operation,     without
+prompting         the        error,        but        giving
+an         overview        of        unsaved        buffers.
+
+  
+`Save current vpm's list into its JSON file`
+
+}
+--------------------------------------------------------------------------------
+*feat-reaload*                                                                 {
+
+`13 Jun 2018`
+Even   tho   reload   operation   is   partially   done   by
+editing      the      |JSON|     and     then     performing
+|VPMLoadLayout|,   I   kinda   feel   it   still   needs   a
+separate    command    just    for   reloading   operations.
+Perhaps     this     will     became     clear     when    I
+implement                                 *feat-edit-layout*
+
+}
+--------------------------------------------------------------------------------
+*intergration-tmux*                                                            {
+
+`?? Jun 2018`
+When  in  Tmux's  fullscreen,  in  order  to  rotate  panes,
+tmux  goes  out  of  fullscreen  mode  and  therefore  makes
+vim's   windows   lose   their  previous  sizes.  See  to  a
+workarround.
+
+}
+--------------------------------------------------------------------------------
+*integration-plugins*                                                          {
+
+tagbar
+nerdtree
+fugitive
+
+}
+--------------------------------------------------------------------------------
+*test-startup-time*                                                            {
+
+I'm    begining    to   suspect   that   startup   time   is
+slower   when   |exec|   from   |JSON|   layouts.   In  this
+case,    it   is   necessary   to   recreate   the   |parse|
+methods                   already                  deleted. 
+
+}
+--------------------------------------------------------------------------------
+*list-out-of-bound-json-retrieve-pos*                                          {
+                                                   
+`20 Jun 2018`
+When     loading     from    the    |JSON|,    the    'last'
+parameter   of   each   dictionary   list   causes   trouble
+when   its   index   points   to  out  of  list  boundaries.
+Work          on          default          values         is
+needed.
+
+Solved        by       applying       modulo       operation
+(%)        over        the       length       of       list.
+
+}
+--------------------------------------------------------------------------------
+*zoom-toggle-curr-edit*                                                        {
+
+`?? Jun 2018`
+I just   found   out   that   I   can  no  longer  use  data
+variables  prefixed  with  s:  because  whenever  I  perform
+|source|   command,   vim   resets   all  my  data,  because
+they              will              be             initiated
+again.
+
+|Solution:|    Init    data    after    testing    if   data
+already                                              exists.
+
+`13 Jun 2018`
+The                  function                  `curr.edit()`
+does       not      work      when      performing      zoom
+toggle                     before                    loading
+any                                                  layout.
+
+}
+--------------------------------------------------------------------------------
+
+}
+--------------------------------------------------------------------------------
+vim: tw=80 ft=help isk+=<,>,\:,+,-,',",[

@@ -1,1 +1,10 @@
-
+*.bak
+vws.vim
+test/
+src/
+ideas.txt
+src
+links
+.git_backup0
+.git_backup1
+.git_backup

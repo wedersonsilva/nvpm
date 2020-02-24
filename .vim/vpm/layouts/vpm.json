@@ -1,0 +1,73 @@
+{ 'name' : 'VPM Workspace',
+'last' : '0',
+'tl'   : [ 
+{ 'name' : 'Plugin',
+    'last' : '0',
+    'bl'   : [ 
+
+      { 'name':'Code',
+        'path':'plugin/vpm.vim'
+      },
+      { 'type':'term',
+        'name':'Terminal'
+      },
+
+    ]
+  
+},
+{ 'name' : 'Planing',
+    'last' : '0',
+    'bl'   : [
+      { 'name':'TASKS',
+        'path':'task.txt'
+      },
+      { 'name':'IDEAS',
+        'path':'ideas.txt'
+      },
+
+    ]
+  
+},
+{ 'name' : 'Layouts',
+    'last' : '0',
+    'bl'   : [ 
+
+      { 'name':'vpm.json',
+        'path':'.vim/vpm/layouts/vpm.json'
+      },
+      { 'name':'Help',
+        'path':'.vim/vpm/layouts/help.json'
+      },
+      { 'name':'Test1',
+        'path':'.vim/vpm/layouts/test1.json'
+      },
+      { 'name':'Test2',
+        'path':'.vim/vpm/layouts/test2.json'
+      },
+
+    ]
+  
+},
+{ 'name' : 'Metainfo',
+    'last' : '0',
+    'bl'   : [
+
+      { 'name':'initvim',
+        'path':'/i/conf/config/nvim/init.vim'
+      },
+      { 'name':'README',
+        'path':'README.md'
+      },
+      { 'name':'LICENSE',
+        'path':'LICENSE'
+      },
+      { 'name':'Gitignore',
+        'path':'.gitignore'
+      },
+
+    ]
+  
+  
+},
+]
+}
