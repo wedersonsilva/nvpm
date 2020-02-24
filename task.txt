@@ -1,317 +1,234 @@
---------------------------------------------------------------------------------
-|tasks-issues-todos|                                                           {
+master > develop > feat-edit-project-files
+Menu {
 
-|Current-Task|
-[ x ] *feat-menu*
+  Current
+    *feat-edit-project-files*
+    *feat-save*
 
-|Todo|
-[   ] *feat-view*
-[   ] *feat-view-highlight*
-[   ] *feat-remember*
-[   ] *feat-save*
-[   ] *feat-edit-layout*
-[   ] *feat-move*
-[   ] *feat-close*
-[   ] *feat-reaload*
-[   ] *feat-events*
-[   ] *feat-vim-bufferlist*
-[   ] *study-curly-braces-names*
-[   ] *study-vim-lang*
-[   ] *study-internal-variables*
-[   ] *test-startup-time*
-[   ] *intergration-tmux*
-[   ] *integration-plugins*
-[   ] *choose-meaniful-names*
+  Done
+    *feat-defaut-project*
 
-|Issues|
-[ i ] *zoom-toggle-curr-edit*
-[ i ] *insert-symlink-in-JSON*
-[ s ] *list-out-of-bound-json-retrieve-pos*
+  Todo
+    *feat-patt-match*
+    *feat-user-colors*
+    *feat-skeleton*
+    *feat-create-dirs*
+    *feat-root-dir*
 
-|Done|
-[ * ] *feat-term*
-[ * ] *feat-view-lines-toggle*
+  Issues
+    *load-deft-missing-folder*
+
+    Solved
+      *wildcard-expand*
+      *wildcard-resolve*
+
+  Search
+    *get-script-location*
+    *glob-function*
 
 }
---------------------------------------------------------------------------------
-|Meaning-of-marks-inside-[]|                                                   {
+Desc {
 
-[ s ] *solved-issue*
-[ x ] *current-task*
-[   ] *todo*
-[ * ] *done*
-[ ? ] *done-but-unstable*
-[ i ] *issue*
+*wildcard-expand*                           {
 
-}
---------------------------------------------------------------------------------
-|TAGS|                                                                         {
+date 21 Feb 2020
 
-Jump by pressing `*` with cursor on top of it.
-Go back and fourth with `n` and `N`
-To unhighlight it, perform `:set nohlsearch`
+  Problem  detected  on wildcard
+  expansions       such       as
+  `~/.config`,  where  `~` won't
+  be  transformed  into the home
+  folder
 
-- |JSON|
-- |VPMLoadLayout|
+|solution|
+
+  There  is  a  function  called
+  `expand()`   that  solved  the
+  problem.
 
 }
---------------------------------------------------------------------------------
-|Descriptions|                                                                 {
+*wildcard-resolve*                          {
 
---------------------------------------------------------------------------------
-*insert-symlink-in-JSON*                                                       {
+date 21 Feb 2020
 
-`05 May 2019`
+Same  as *wildcard-expand* but
+for       symbolic      links.
 
-I suspect  that  the insertion of symlinks into JSON file is
-not  working.  It's  somehow  messing  with the list cycling
-operation.
+|solution|
 
-}
---------------------------------------------------------------------------------
-*feat-move*                                                                    {
-
-`20 Jun 2018`
-Move  positions  of  Workspaces,  Tabs  and Buffers. It must
-allow     one     to     use     the    mouse    as    well.
-
+  There  is  a  function  called
+  `resolve()`   that  solved  the
+  problem.
 
 }
---------------------------------------------------------------------------------
-*feat-term*                                                                    {
+*feat-defaut-project*                       {
 
-`20 Jun 2018`
+21 Feb 2020
 
-This  features methods regarding Vim's terminal window mode.
-It is supposed to allow one to open the terminal, controlled
-by  |JSON|  input. This falls into the *type* == *term* , in
-the  dictionary  of VPM's bufferlist. Also, a quick terminal
-window  can  be  open  by  the command *VPMTerminal* , which
-opens        it        in       the       main       window.
+The feature is about loading a
+user  defined  default project
+file  somewhere on nvim start.
+I'm   thinking   on   using  a
+symbolic  link  that points to
+the  desired  file.  It's  the
+simpler approach I'm sure, but
+issues   maybe   somewhat   be
+expected.
 
-Another  point  is the *cwd* and *cmd* capabilities. In this
-case,  the  user can put, into the |JSON|, the directory and
-the command that is supposed to be changed to and run, after
-the  buffer is created. Note the scope of this feature is at
-buffer             level.             An            example:
+|issue-colorscheme|
 
-{
-  'name' : 'docpython'       ,
-  'cwd'  : '<path-to-pydoc>' ,
-  'type' : 'term'            ,
-  'cmd'  : 'ranger'          ,
-}
+There  is  an  issue  with the
+colorscheme.      It     loads
+perfectly,  but the colors are
+gone.
 
-the    'path'   attribute   is   automaticaly   pointed   to
-the      address      of      the      terminal     emulator
-created                        by                       Vim.
+|solved|
 
-}
---------------------------------------------------------------------------------
-*feat-view-highlight*                                                          {
-
-`20 Jun 2018`
-Import highlight settings from |JSON| file.
-
-}
---------------------------------------------------------------------------------
-*feat-close*                                                                   {
-
-`14 Jun 2018`
-Manage     closing     operations     of     buffers     and
-integrate   this  with  other  movements  like  saving.  For
-example,   if   I   close  one  buffer,  I  would  have  the
-oportunity   to  save  the  current  layout  into  the  same
-|JSON|           that           I           used          to
-load                       the                       layout.
+A file named `default`, inside
+VPM  folder will hold the name
+of  the  default  project. The
+command  `VPMSaveDefault`  was
+also    implemented   in   the
+process.  No  arguments  means
+save   the   current  project.
+Pressing    `tab`   will   run
+through  all possible projects
+and  choosing one will save it
+as default.
 
 }
---------------------------------------------------------------------------------
-*feat-view-lines-toggle*                                                       {
+*get-script-location*                       {
 
-`20 Jun 2018`
-Toggle visibility of top and bottom lines.
+`script absolute filename`
+  resolve(expand('<sfile>:p'))
 
-}
---------------------------------------------------------------------------------
-*feat-remember*                                                                {
+`script absolute directory`
+  resolve(expand('<sfile>:h'))
 
-`13 Jun 2018`
-Remembers    where    the   cursor   position   was   before
-switching     to     the    buffer    at    hand.    Somehow
-the         cursor         doesn't         stay         put.
-
-This  information  can  be  stored  inside  the  buffer list
-dictionary  and  then  use  Vim's  cursor()  function to set
-its  position.  Make tests to see if this operation is slow,
-and  if  it  is,  try  to  measure  time  interval  in which
-the                          user                         is
-pressing                                               keys.
+`see :h expand()`
 
 }
---------------------------------------------------------------------------------
-*feat-view*                                                                    {
+*feat-edit-project-files*                   {
 
-`15 Jun 2018`
-This   feature   is   regarding   the  visual  feedback  for
-the  many  operations  of  vpm.  It should show not only the
-current  buffer,  but  also,  at least, the list of tabs and
-buffers.    It    can   be   done   by   setting   the   tab
-and                                              statusline.
+21 Feb 2020
 
-Another  possibility  is  to  control  the  content  of  the
-surrounding   buffers  in  zoom  mode.  In  this  case,  the
-list  of  tabs  and  buffers  could be shown, for example in
-the   top  buffer.  My  only  concern  for  this  is  to  be
-slower       than       setting       the       tab      and
-status                     lines                    instead.
+This   feature   regards   the
+ability    of   checking   all
+possible   project   files  in
+order to change and load them.
+The  following conditions must
+be satisfied:
 
-}
---------------------------------------------------------------------------------
-*feat-menu*                                                                    {
+1) command :VPMEditProjects
 
-`?? Jun 2018`
-There   is   this  other  feature  that  I  really  want  to
-implement.  A main menu that would be loaded into the center
-buffer  in zoom mode, with some kind of overview of not only
-operations  that  could  trigger  functions,  but  also  the
-possibility        of        showing       the       current
-status              of              vpm's             lists.
+2)  A temporary workspace will
+be created containing each and
+all       project       files
 
-This   idea   is   not  really  mine.  I  got  it  from  the
-`Tagbar`  and  `NERDTree`  plugins.  When  you trigger these
-plugins,  they  open  a  new  buffer  where you have special
-keybindings   that   trigger   specific   functions  in  the
-plugin.  I  think  this  is  done  with  `autocmd`  set  for
-specific    buffer    names.    Tagbar   uses   names   like
-*__Tagbar__* . 
+3) If the current project file
+is  changed,  then  reload it.
 
-Notes:
-
-1.    Check    autocmd    at   CursorMoved   or   CursorHold
-events        for        checktime        and       autoread
-
-2.    Make   autocmd   from   *1.*   update   one   of   the
-extreme         buffers         in         zoom         mode
+this  feature will prevent the
+user  from  the need of having
+to  point  the  project  files
+inside themselves.
 
 }
---------------------------------------------------------------------------------
-*feat-vim-bufferlist*                                                          {
+*feat-save*                                 {
 
-`13 Jun 2018`
-Management   of   buffers   opened   by   the   user   using
-Vim's   builtin   buffer   creation   methods   like:  badd,
-new, tabnew, edit, split, etc.
+`22 Feb 2020`
 
-Study   about   Vim's   buffer,   window   and   tab  lists.
+Methods   under   |g:vpm.save|
+`dict`.   The  methods  should
+regard   the   many  different
+actions of saving things, such
+as:
+
+
+1) |feat-defaut-project|
+2) |feat-edit-project-files|
+   where  upon saving the project
+   file,   vpm  must  also  apply
+   changes  if  that  project  is
+   currently              loaded.
 
 }
---------------------------------------------------------------------------------
-*feat-events*                                                                  {
+*feat-root-dir*                             {
 
-`13 Jun 2018`
-Management  of  events  caused  by  vpm's  command  API. All
-the   movements   need  to  be  registered  somewhere  (`vpm
-dict?`)     in     order    to    be    used    later    on.
+`22 Feb 2020`
+
+This  feature  regards  the  parse  system for the
+VPM's markup language. It should give the user the
+oportunity  of  setting a different root directory
+rather  than  the  path where nvim was started. It
+should          work          as          follows:
+
+
+current directory   : /path/to/project1
+different directory : /path/to/project2
+
+so   let's  say  the  project1's  layout  file  is
+(/path/to/project1/.vpm/proj/code):
+
+vpm
+---------------------------------------
+workspace Code
+  tab Main
+    buff Main:main.c
+    term Terminal:bash
+workspace Docs
+  tab Project2
+    buff Main:/path/to/project2/doc.txt
+---------------------------------------
+
+so the user should have a `root` keyword to use it
+anywhere, such as:
+
+vpm
+------------------------
+workspace Code
+  tab Main
+    buff Main:main.c
+    term Terminal:bash
+workspace Docs
+  root /path/to/project2
+  tab Project2
+    buff Main:doc.txt
+------------------------
+
+this was, VPM should be able to prepend the string
+`/path/to/project2`  to `doc.txt` in order to form
+the    whole    path    to   the   doc.txt   file.
+
+Yet another approach is to declare the root folder
+just  after  the  workspace  name, but separate it
+with ":", so the following
+
+vpm
+----------------------------------
+workspace Docs : /path/to/project2
+----------------------------------
+
+should have the same effect.
+
+This feat should work for tabs as well. The buffer
+already has it.
 
 }
---------------------------------------------------------------------------------
-*feat-save*                                                                    {
+*load-deft-missing-folder*                  {
 
-`14 Jun 2018`
-`Save changes in vpm's list to files`
-When  performing  changes  in  each  buffer,  these  changes
-will   be   lost  if  one  cycle  to  another  buffer.  This
-can  be  prevented  if  `set hidden` is done by the user. In
-this  case,  if  I  suddenly try to close a buffer, Vim will
-report  an  error  and ask you to save all buffers that have
-changes,    and    then   it   will   jump   to   the   next
-modified     buffer     -     in    Vim's    buffer    list.
+24 Feb 2020
 
-Instead,       the       behaviour       I      want      is
-to      manage     the     saving     operation,     without
-prompting         the        error,        but        giving
-an         overview        of        unsaved        buffers.
+If  default  project  is  set  but  it's  file  is
+non-existing,   then  an  error  arrises.  Fix  by
+checking g:vpm.data.load()
 
+
+}
+*glob-function*
   
-`Save current vpm's list into its JSON file`
+  use it to list a directory
+
+  call glob('/path/to/dir/*')
 
 }
---------------------------------------------------------------------------------
-*feat-reaload*                                                                 {
-
-`13 Jun 2018`
-Even   tho   reload   operation   is   partially   done   by
-editing      the      |JSON|     and     then     performing
-|VPMLoadLayout|,   I   kinda   feel   it   still   needs   a
-separate    command    just    for   reloading   operations.
-Perhaps     this     will     became     clear     when    I
-implement                                 *feat-edit-layout*
-
-}
---------------------------------------------------------------------------------
-*intergration-tmux*                                                            {
-
-`?? Jun 2018`
-When  in  Tmux's  fullscreen,  in  order  to  rotate  panes,
-tmux  goes  out  of  fullscreen  mode  and  therefore  makes
-vim's   windows   lose   their  previous  sizes.  See  to  a
-workarround.
-
-}
---------------------------------------------------------------------------------
-*integration-plugins*                                                          {
-
-tagbar
-nerdtree
-fugitive
-
-}
---------------------------------------------------------------------------------
-*test-startup-time*                                                            {
-
-I'm    begining    to   suspect   that   startup   time   is
-slower   when   |exec|   from   |JSON|   layouts.   In  this
-case,    it   is   necessary   to   recreate   the   |parse|
-methods                   already                  deleted. 
-
-}
---------------------------------------------------------------------------------
-*list-out-of-bound-json-retrieve-pos*                                          {
-                                                   
-`20 Jun 2018`
-When     loading     from    the    |JSON|,    the    'last'
-parameter   of   each   dictionary   list   causes   trouble
-when   its   index   points   to  out  of  list  boundaries.
-Work          on          default          values         is
-needed.
-
-Solved        by       applying       modulo       operation
-(%)        over        the       length       of       list.
-
-}
---------------------------------------------------------------------------------
-*zoom-toggle-curr-edit*                                                        {
-
-`?? Jun 2018`
-I just   found   out   that   I   can  no  longer  use  data
-variables  prefixed  with  s:  because  whenever  I  perform
-|source|   command,   vim   resets   all  my  data,  because
-they              will              be             initiated
-again.
-
-|Solution:|    Init    data    after    testing    if   data
-already                                              exists.
-
-`13 Jun 2018`
-The                  function                  `curr.edit()`
-does       not      work      when      performing      zoom
-toggle                     before                    loading
-any                                                  layout.
-
-}
---------------------------------------------------------------------------------
-
-}
---------------------------------------------------------------------------------
 vim: tw=80 ft=help isk+=<,>,\:,+,-,',",[

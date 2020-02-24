@@ -1,348 +1,664 @@
-" MIT License                                              {
-"
-" Copyright (c) 2018 Jr Soares
-"
-" Permission  is  hereby  granted,  free  of  charge, to any
-" person  obtaining  a  copy of this software and associated
-" documentation  files  (the  "Software"),  to  deal  in the
-" Software without restriction, including without limitation
-" the   rights   to   use,  copy,  modify,  merge,  publish,
-" distribute,   sublicense,   and/or   sell  copies  of  the
-" Software,    and   to   permit   persons   to   whom   the
-" Software     is    furnished    to    do    so,    subject
-" to                      the                      following
-" conditions:
-"
-" The  above  copyright  notice  and  this permission notice
-" shall     be     included     in     all     copies     or
-" substantial       portions      of      the      Software.
-"
-" THE   SOFTWARE  IS  PROVIDED  "AS  IS",  WITHOUT  WARRANTY
-" OF   ANY   KIND,   EXPRESS   OR   IMPLIED,  INCLUDING  BUT
-" NOT       LIMITED      TO      THE      WARRANTIES      OF
-" MERCHANTABILITY,  FITNESS  FOR  A  PARTICULAR  PURPOSE AND
-" NONINFRINGEMENT.   IN   NO  EVENT  SHALL  THE  AUTHORS  OR
-" COPYRIGHT   HOLDERS  BE  LIABLE  FOR  ANY  CLAIM,  DAMAGES
-" OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT
-" OR  OTHERWISE,  ARISING  FROM,  OUT  OF  OR  IN CONNECTION
-" WITH    THE    SOFTWARE    OR    THE    USE    OR    OTHER
-" DEALINGS            IN            THE            SOFTWARE.
-" }
+"if exists('g:vpm.loaded')
+"  finish
+"endif
 
-if exists('g:__VPM_SCRIPT_LOADED__')
-  finish
-endif
+" Variables  {
 
-let g:__VPM_SCRIPT_LOADED__  = 1
+let g:vpm           = {}
+let g:vpm.loaded    = 1
 
-let g:vpm                    = {}
-let g:vpm.term               = {}
-let g:vpm.term.buf           = ''
-let g:vpm.dir                = get(g: , 'vpm_dir'  , '.vim/vpm')
+let g:vpm.temp = {} 
+let g:vpm.save = {}
+let g:vpm.edit = {}
+let g:vpm.patt = {}
+
+let g:vpm.dirs      = {}
+let g:vpm.dirs.vpm  = get( g:vpm , 'vpm'  , '.vpm'   )
+let g:vpm.dirs.main = get( g:vpm , 'main' , '~/.vpm' )
+let g:vpm.dirs.proj = 'proj'
+let g:vpm.dirs.view = 'view'
+
+let g:vpm.data      = {}
+let g:vpm.data.make = {}
+let g:vpm.data.curr = {}
+
+let g:vpm.term      = {}
+let g:vpm.term.buf  = ''
+
 let g:vpm.view               = {}
 let g:vpm.view.zoom          = {}
 let g:vpm.view.lines         = {}
 let g:vpm.view.lines.visible = 0
-let g:vpm.curr               = {}
-let g:vpm.curr.view          = {}
-let g:vpm.menu               = {}
 
+" }
+" Functions  {
 
+" g:vpm      {
 
-" Functions                     {
+function! g:vpm.init()                    "{
 
-" Dict: "g:vpm"                 {
-
-function! g:vpm.init()                        dict "{
-
-  let g:vpm.wl     = []
-  let g:vpm.loaded = []
-
-  call self.curr.init()
+  call self.patt.init()
+  call self.data.init()
   call self.view.init()
-  " call self.menu.init()
+  call self.temp.init()
+  call self.edit.init()
 
 endfunction
-" }
-function! g:vpm.null()                        dict "{
+"}
+function! g:vpm.null()                    "{
   return ''
 endfunction
 "}
-function! g:vpm.createbuffers()               dict "{
+function! g:vpm.test()                    "{
+  call self.dirs.list('projname')
+endfunction
+"}
+function! g:vpm.deft()                    "{
 
-  let wlen = len(self.wl)
-  for w in range(wlen)
+  let root = self.dirs.path('root')
 
-    let tlen = len(self.wl[w].tl)
+  let file = root . 'default'
 
-    let self.wl[w].last = self.wl[w].last % tlen
+  if filereadable(file)
+    let project = readfile(file)[0]
+    if Found(project)
+      call self.data.load(project)
+      if g:vpm.data.loaded
+        echo "VPM: Loaded default project: " . project
+        echo "Press any key to start!"
+      endif
+    endif
+  endif
 
-    for t in range(tlen)
+endfunction
+"}
+function! g:vpm.loop(s,t)                 "{
 
-      let blen = len(self.wl[w].tl[t].bl)
+  " Cycle Whatever
+  call self.data.curr.loop(a:s,a:t)
 
-      let self.wl[w].tl[t].last = self.wl[w].tl[t].last % blen
+  " Edit Buffer of New Position
+  call self.data.curr.edit()
 
-      for b in range(blen)
+endfunction
+"}
 
-        if has_key(self.wl[w].tl[t].bl[b],'type')
+"}
+" g:vpm.edit {
 
-          if self.wl[w].tl[t].bl[b].type == 'term'
+function! g:vpm.edit.init()               "{
 
+  let self.path = g:vpm.dirs.path('temp').'proj'
+  let self.mode = 0
+  let self.currpath = ''
+  let self.currname = ''
 
-            let name = get(g:vpm.wl[w].tl[t].bl[b],'name','Term')
-            let cwd  = get(g:vpm.wl[w].tl[t].bl[b],'cwd' ,'.')
-            let cmd  = get(g:vpm.wl[w].tl[t].bl[b],'cmd' ,'/bin/bash')
+endfunction "}
+function! g:vpm.edit.proj()               "{
 
-            exec 'edit term://'.cwd.'//'.cmd
+  if self.mode 
+    call g:vpm.data.load(self.currname)
+    call self.init()
+    return
+  endif
+  " Save loaded project name  {
+  
+  let currpath = g:vpm.data.path
+  let self.currpath = g:vpm.data.path
+  let self.currname = matchlist(self.currpath,g:vpm.patt.edit)
+  let self.currname = [currpath,self.currname[1]][Found(self.currname)]
 
-            let g:vpm.wl[w].tl[t].bl[b] = {
-            \
-            \ 'name' : name,
-            \ 'cwd'  : cwd,
-            \ 'cmd'  : cmd,
-            \ 'path' : bufname('%'),
-            \
-            \}
+  " }
+  " Create temporary project  {
 
-          else
+  let projects = g:vpm.dirs.list('proj')
+  if DoesNotFind(projects)
+    echo 'No project files were found.'
+    return -1
+  endif
 
-            exec 'badd ' . self.wl[w].tl[t].bl[b].path
+  let currproj = matchstr(currpath,g:vpm.patt.edit)
 
-          endif
+  let lines = []
+  
+  " Loop over projects
+  for project in projects
+    if project == currproj
+      continue
+    endif
+    let name  = matchlist(project,g:vpm.patt.edit)
+    let name  = [project,name[1]][Found(name)]
+    let buff  = 'buff '.name.':'.project
+    let lines = add(lines,buff)
+  endfor
+  let lines = add(lines,'tab [EditTerminal]')
+  let lines = add(lines,'term Terminal:bash')
+  
+  " Give priority to current loaded project
+  if Found(currpath)
+    let name  = matchlist(currpath,g:vpm.patt.edit)
+    let name  = [currpath,name[1]][Found(name)]
+    let lines = ['buff [*] '.name.':'.currpath] + lines
+  endif
+
+  " Pre-append tab and workspace lines
+  let lines = ['tab       [ Project Files ]'    ] + lines
+  let lines = ['workspace [ VPM Edit Projects ]'] + lines
+
+  call writefile(lines,self.path)
+
+  " }
+  " Load  temporary  project  {
+  
+  call g:vpm.data.load(self.path)
+
+  " }
+
+endfunction "}
+
+" edit }
+" g:vpm.temp {
+
+function! g:vpm.temp.init()               "{
+
+  let patt       = g:vpm.patt.temp
+  let self.path  = matchstr(v:servername,patt)
+  let self.path  = resolve(self.path)
+  let self.path .= '/vpm/'
+
+  if !isdirectory(self.path)
+    call mkdir(self.path,"p")
+  endif
+
+  return self.path
+
+endfunction "}
+
+" temp }
+" g:vpm.save {
+
+function! g:vpm.save.deft(p)              "{
+
+  let proj = ''
+  let dest = g:vpm.dirs.path('root') . 'default'
+
+  " Argument takes priority
+  if Found(a:p)
+    let proj = a:p
+  else
+    let path = g:vpm.data.path
+    if filewritable(path)
+      " Split: get the filename. Look for better solution
+      let proj = split(path,'/')[-1]
+    endif
+  endif
+
+  call writefile([proj],dest)
+
+endfunction "}
+
+" save }
+" g:vpm.dirs {
+
+function! g:vpm.dirs.path(t)               "{
+  if     a:t == 'proj'
+    return self.vpm . '/' . self.proj . '/'
+  elseif a:t == 'root'
+    return resolve(self.vpm) . '/'
+  elseif a:t == 'temp'
+    return resolve(g:vpm.temp.path) . '/'
+  endif
+  return ''
+endfunction
+"}
+function! g:vpm.dirs.list(t)               "{
+
+  if a:t == 'proj'
+    let projpath = self.path('proj')
+    let projects = glob(projpath.'*')
+    let projects = split(projects,"\n")
+    return projects
+  elseif a:t == 'projname'
+
+    let projects = self.list('proj')
+
+    let projnames = []
+
+    if Found(projects)
+      for path in projects
+        let name = matchlist(path,g:vpm.patt.tail)
+        if Found(name)
+          call add(projnames,name[1])
         endif
+      endfor
+    endif
 
+    return projnames
+
+  endif
+
+endfunction
+"}
+
+" init }
+" g:vpm.data {
+
+" g:vpm.data.*    {
+
+function! g:vpm.data.init()               "{
+  let self.loaded = 0
+  let self.last = 0
+  let self.path = ''
+  call self.curr.init()
+endfunction
+"}
+function! g:vpm.data.show()               "{
+
+  for wksp in self.proj
+    echo 'w' wksp.name
+    for tab in wksp.tabs
+      echo 't  ' tab.name
+      for buffer in tab.buff
+        if has_key(buffer,'path')
+          echo 'b    ' buffer.name buffer.path
+        else
+          echo 'c    ' buffer.name buffer.cmd
+        endif
       endfor
     endfor
   endfor
 
-  call self.term.make()
-
 endfunction
-" }
-function! g:vpm.destroybuffers(windex)        dict "{
+"}
 
-  for tab in g:vpm.wl[a:windex].tl
-    for buf in tab.bl
-      if bufexists(buf.path)
-        exec 'bdelete! ' . buf.path
-      endif
-    endfor
-  endfor
+" misc }
+" g:vpm.data.load {
 
-  call self.term.kill()
+function! g:vpm.data.load(file)           "{
 
-  if self.view.zoom.enabled
-    call self.view.zoom.disable()
-    call self.view.zoom.enable()
+  " Variables                       {
+  let workspaces = []
+  let patt       = g:vpm.patt.wksp
+
+  " Edit project files 
+  let g:vpm.edit.mode = a:file == g:vpm.edit.path
+  let path = g:vpm.edit.mode ? '' : g:vpm.dirs.path('proj')
+  let path = resolve(expand(path.a:file))
+
+  if !filereadable(path)
+    echo "VPM: default project '".path."' is unreadable or missing"
+    return -1
   endif
+  "}
+  " Look up in file                 {
+
+  let file = readfile(path)
+  if Found(file)
+
+    let self.path  = path
+    let self.file  = file
+
+    for i in range(len(self.file))
+
+      let line = self.file[i]
+      let awkspmatch = matchlist(line,patt)
+
+      if Found(awkspmatch)
+        let workspace = self.wksp(awkspmatch,i)
+        if workspace.enabled
+          call add(workspaces,workspace)
+        endif
+      endif
+
+    endfor
+    let self.proj   = workspaces
+    let self.loaded = Found(workspaces)
+
+    " Make buffers and terminals
+    call self.make.proj()
+    " Update Last Position
+    call self.curr.last()
+    " Edit Current Buffer
+    call self.curr.edit()
+    " Show Top and Bottom Lines
+    call g:vpm.view.lines.show()
+
+  endif
+  "}
 
 endfunction
-" }
-function! g:vpm.loadlayout(layout)            dict "{
+" load }
+function! g:vpm.data.wksp(match,index)    "{
 
-  let fpath = g:vpm.dir . '/layouts/' . a:layout
+  " Capture workspace meta-data                 {
+  let i                = a:index
+  let workspace        = {}
+  let workspace.tabs   = []
+  let workspace.enabled = trim(a:match[1]) == '*' ? 0 : 1
+  let workspace.name   = trim(a:match[2])
+  let workspace.line   = self.file[i]
+  let workspace.last   = 0
+  "}
+  " Look for tabs until workspace               {
+  for j in range(i+1,len(self.file)-1)
+    " Line matching {
+    let line = self.file[j]
+    let awkspmatch = matchlist(line,g:vpm.patt.wksp)
+    let atabmatch  = matchlist(line,g:vpm.patt.tabs)
+    "}
 
-  let lines = readfile(fpath)
-
-  let JSON = join(lines,'')
-
-  exec 'let workspace = '.JSON
-
-  " If Layout is Loaded, delete old Workspace
-  " Structure and Reload
-
-  let foundworkspace = 0
-
-  for windex in range(len(g:vpm.wl))
-
-    if workspace.name == g:vpm.wl[windex].name
-
-      call self.destroybuffers(windex)
-      let g:vpm.wl[windex] = workspace
-      let foundworkspace = 1
-
+    if Found(awkspmatch)
       break
-
+    elseif Found(atabmatch)
+      let tab = self.tabs(atabmatch,j)
+      if tab.enabled
+        call add(workspace.tabs,tab)
+      endif
     endif
 
   endfor
+  "}
 
-  if !foundworkspace
-    call add(g:vpm.wl,workspace)
-  endif
-
-  " Create all the buffers
-  call g:vpm.createbuffers()
-
-  " Retrieve Last Position
-  call g:vpm.curr.retrieve()
-
-  " Edit Current Buffer
-  call self.curr.edit()
-
-  " Show Top and Bottom Lines
-  call self.view.lines.show()
+  return workspace
 
 endfunction
 "}
-function! g:vpm.savelayout()                  dict "{
+function! g:vpm.data.tabs(match,index)    "{
 
-  echo 'Saving to be Developed'
+  " Capture tab meta-data                 {
+
+  let i           = a:index
+  let tab         = {}
+  let tab.buff    = []
+  let tab.enabled = trim(a:match[1]) == '*' ? 0 : 1
+  let tab.name    = trim(a:match[2])
+  let tab.line    = self.file[i]
+  let tab.last    = 0
+
+  "}
+  " Look for bufs until next tab          {
+  for j in range(i+1,len(self.file)-1)
+    " Line matching {
+    let line = self.file[j]
+    let atabmatch  = matchlist(line,g:vpm.patt.tabs)
+    let abuffmatch = matchlist(line,g:vpm.patt.buff)
+    let atermmatch = matchlist(line,g:vpm.patt.term)
+    "}
+
+    if Found(atabmatch)
+      break
+    elseif Found(abuffmatch)
+      let buff = self.buff(abuffmatch,j)
+      if buff.enabled
+        call add(tab.buff,buff)
+      endif
+    elseif Found(atermmatch)
+      let term = self.term(atermmatch,j)
+      if term.enabled
+        call add(tab.buff,term)
+      endif
+    endif
+
+  endfor
+  "}
+
+  return tab
 
 endfunction
 "}
-function! g:vpm.cycle(step,what)              dict "{
+function! g:vpm.data.buff(match,index)    "{
 
-  " Cycle Whatever
-  call self.curr.cycle(a:step,a:what)
+  " Capture buff meta-data {
 
-  " Edit Buffer of New Position
-   call  self.curr.edit()
+  let buff         = {}
+  let buff.enabled = trim(a:match[1]) == '*' ? 0 : 1
+  let buff.name    = trim(a:match[2])
+  let buff.path    = resolve(expand(trim(a:match[3])))
+  let buff.line    = self.file[a:index]
+  let buff.last    = 0
+
+  "}
+
+  return buff
 
 endfunction
-" }
+"}
+function! g:vpm.data.term(match,index)    "{
 
-" }
-" Dict: "g:vpm.term"            {
+  " Capture term meta-data {
 
-function! g:vpm.term.make()             dict "{
+  let term         = {}
+  let term.enabled = trim(a:match[1]) == '*' ? 0 : 1
+  let term.name    = trim(a:match[2])
+  let term.cmd     = trim(a:match[3])
+  let term.line    = self.file[a:index]
+  let term.last    = 0
 
-  if !bufexists(self.buf)
+  "}
 
+  return term
+
+endfunction
+"}
+
+" load }
+" g:vpm.data.make {
+
+function! g:vpm.data.make.proj()          "{
+
+  let proj = g:vpm.data.proj
+  let wlen = len(proj)
+  let g:vpm.data.last %= wlen
+
+  for w in range(wlen) "{
+    let tabs = proj[w].tabs
+    let tlen = len(tabs)
+
+    let proj[w].last %= tlen
+
+    for t in range(tlen) "{
+      let buff = tabs[t].buff
+      let blen = len(buff)
+
+      let tabs[t].last %= blen
+
+      for b in range(blen) "{
+        let buffer = buff[b]
+
+        if     has_key(buffer,'cmd')
+          let path = self.term(buffer)
+          let buffer.path = path
+        elseif has_key(buffer,'path')
+          call self.buff(buffer)
+        endif
+
+      endfor
+      "}
+    endfor
+    "}
+  endfor
+  "}
+
+endfunction
+"}
+function! g:vpm.data.make.buff(b)         "{
+  exec 'badd ' . a:b.path
+endfunction
+"}
+function! g:vpm.data.make.term(t)         "{
+
+  let cmd = a:t.cmd
+
+  if Found(cmd)
+    exec 'edit term://.//'.cmd
+  else
     exec 'buffer|terminal'
-    let g:vpm.term.buf = bufname('%')
+  endif
 
+  return bufname('%')
+
+endfunction
+"}
+
+" make }
+" g:vpm.data.curr {
+
+function! g:vpm.data.curr.init()          "{
+  let self.w = 0
+  let self.t = 0
+  let self.b = 0
+endfunction
+"}
+function! g:vpm.data.curr.edit()          "{
+  exec ':edit ' . self.list('b')[self.b].path
+endfunction
+"}
+function! g:vpm.data.curr.leng(t)         "{
+  return len(self.list(a:t))
+endfunction
+"}
+function! g:vpm.data.curr.list(t)         "{
+
+  if     a:t == 'w'
+    return g:vpm.data.proj
+  elseif a:t == 't'
+    return self.list('w')[self.w].tabs
+  elseif a:t == 'b'
+    return self.list('t')[self.t].buff
   endif
 
 endfunction
-" }
-function! g:vpm.term.kill()             dict "{
+"}
+function! g:vpm.data.curr.item(t)         "{
 
-  if bufexists(self.buf)
-
-    exec 'bdelete! ' . self.buf
-
-    let g:vpm.term.buf = ''
-
+  if     a:t == 'w'
+    return self.list('w')[self.w]
+  elseif a:t == 't'
+    return self.item('w').tabs[self.t]
+  elseif a:t == 'b'
+    return self.item('t').buff[self.b]
   endif
 
 endfunction
+"}
+function! g:vpm.data.curr.loop(s,t)       "{
+
+  if g:vpm.data.loaded "{
+
+    if bufname('%') != self.item('b').path "{
+      call self.edit()
+    else
+      let step = a:s
+      let type = a:t
+      let self[type] += step
+      let self[type]  = self[type] % self.leng(type)
+
+      if     type == 'b' "{
+        let g:vpm.data.proj[self.w].tabs[self.t].last = self.b
+      "}
+      elseif type == 't' "{
+        " Update new current tab position after cycling
+        let g:vpm.data.proj[self.w].last = self.t
+        " For the new tab, retrieve last buffer position
+        let self.b = self.item('t').last
+      "}
+      elseif type == 'w' "{
+        " Update new current Workspace position after cycling
+        let g:vpm.data.last = self.w
+        " Update tab and buf with last positions
+        let self.t = self.item('w').last
+        let self.b = self.item('t').last
+
+      endif "}
+
+    endif   "}
+
+  " }
+  else
+    echo 'Load layout first!'
+  endif
+
+endfunction
+"}
+function! g:vpm.data.curr.last()          "{
+
+  let self.t = self.item('w').last
+  let self.b = self.item('t').last
+
+endfunction
+"}
+function! g:vpm.data.curr.term()          "{
+
+  if bufname('%') != g:vpm.term.buf
+    exec ':buffer ' . self.item('b').path
+  endif
+
+endfunction
+" focus }
+
+" curr}
+
+" data}
+" g:vpm.term {
+
+function! g:vpm.term.make() "{
+
+ if !bufexists(self.buf)
+
+   exec 'buffer|terminal'
+   let self.buf = bufname('%')
+
+ endif
+
+endfunction
 " }
-function! g:vpm.term.edit()             dict "{
+function! g:vpm.term.kill() "{
+
+ if bufexists(self.buf)
+
+   exec 'bdelete! ' . self.buf
+
+   let self.buf = ''
+
+ endif
+
+endfunction
+" }
+function! g:vpm.term.edit() "{
 
   call self.make()
-
   exec 'edit! ' . self.buf
 
 endfunction
 " }
 
 " }
-" Dict: "g:vpm.menu"            {
+" g:vpm.view {
 
-function! g:vpm.menu.init() dict         "{
+function! g:vpm.view.init() dict "{
 
-  let g:vpm.menu.struct = []
-  let self.path = '/tmp/vpm_menu'
-
-  exec 'badd '. self.path
-  call writefile([''],self.path,'S')
-  exec 'au CursorMoved * checktime '. self.path
-  
-endfunction
-
-" }
-function! g:vpm.menu.make() dict         "{
-
-  " Loop over all buffers
-  "
-  "     │ ─ ━ ┃
-  "
-  "
-  "     ┌ ┍ ┎ ┏ ▛
-  "
-  "     ┐ ┑ ┒ ┓
-  "
-  "     └ ┕ ┖ ┗
-  "
-  "     ┘ ┙ ┚ ┛
-  "
-  "     ├ ┝ ┠ ┣
-  "
-  "     ┤ ┥ ┨ ┫
-  "     ┬ ┯ ┰ ┳
-  "
-  "     ┴ ┷ ┸  ┻
-  "
-  "     ┼ ┿ ╂ ╋
-  "
-  " ▀ ▄ █   ░ ▒ ▓ ■ □ ▢ ▣ ▤ ▥ ▦ ▧ ▨ ▩ ▪ ▬ ▭
-  "
-  "  ▐▌
-  "
-  " ▲ △ ▶ ▷ ▼ ▽ ◀ ◁
-  "
-  " ➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤➤
-  " Build self.struct string
-
-  let g:vpm.menu.struct = []
-
-  for wsp in g:vpm.wl
-
-    let line = wsp.name
-    call add(self.struct,line)
-
-    for tab in wsp.tl
-
-      let line = '- '. tab.name
-      call add(self.struct,line)
-
-      for buf in tab.bl
-
-        let line = '  `- '. buf.name
-        call add(self.struct,line)
-
-      endfor
-
-
-    endfor
-
-
-  endfor
-  
-endfunction
-
-" }
-
-" }
-" Dict: "g:vpm.view"            {
-
-function! g:vpm.view.init()             dict "{
-
-  call self.zoom.init()
+ call self.zoom.init()
 
 endfunction
 " }
 
-" }
-" Dict: "g:vpm.view.zoom"       {
+" g:vpm.view.zoom {
 
 function! g:vpm.view.zoom.init()        dict "{
 
   let self.enabled = get(g: , 'vpm_zoom_enabled' , 0  )
-  let self.height  = get(g: , 'vpm_zoom_height', 20)
-  let self.width   = get(g: , 'vpm_zoom_width' , 80)
+  let self.height  = get(g: , 'vpm_zoom_height'  , 20 )
+  let self.width   = get(g: , 'vpm_zoom_width'   , 80 )
 
   let self.l       = get(g: , 'vpm_zoom_l'       , 15 )
   let self.r       = get(g: , 'vpm_zoom_r'       , 0  )
   let self.t       = get(g: , 'vpm_zoom_t'       , 1  )
   let self.b       = get(g: , 'vpm_zoom_b'       , 4  )
 
-  let self.lbuffer = g:vpm.dir . '/__VPM__ZOOM__L__'
-  let self.bbuffer = g:vpm.dir . '/__VPM__ZOOM__B__'
-  let self.tbuffer = g:vpm.dir . '/__VPM__ZOOM__T__'
-  let self.rbuffer = g:vpm.dir . '/__VPM__ZOOM__R__'
+  let self.lbuffer = g:vpm.dirs.path('root') . '__VPM__ZOOM__L__'
+  let self.bbuffer = g:vpm.dirs.path('root') . '__VPM__ZOOM__B__'
+  let self.tbuffer = g:vpm.dirs.path('root') . '__VPM__ZOOM__T__'
+  let self.rbuffer = g:vpm.dirs.path('root') . '__VPM__ZOOM__R__'
 
   let self.height = self.height >= 20 ? 20 : self.height
   let self.width  = self.width  >= 80 ? 80 : self.width
@@ -351,17 +667,17 @@ endfunction
 " }
 function! g:vpm.view.zoom.highlight()   dict "{
 
-  hi StatusLine    guifg='7c7c7c' guibg=bg gui=none
-  hi StatusLineNC  guifg=bg       guibg=bg gui=none
-  hi LineNr guibg=bg                               gui=none
+  hi StatusLine   ctermfg=15 ctermbg=14 guifg='7c7c7c' guibg=bg gui=none
+  hi StatusLineNC ctermfg=15 ctermbg=14 guifg=bg       guibg=bg gui=none
+  hi LineNr       ctermfg=15 ctermbg=14 guibg=bg                gui=none
 
-  hi SignColumn guibg=bg                  gui=none
-  hi VertSplit  guifg=bg guibg=bg         gui=none
-  hi NonText    guifg=bg                  gui=none
+  hi SignColumn ctermfg=15 ctermbg=14 guibg=bg                  gui=none
+  hi VertSplit  ctermfg=15 ctermbg=14 guifg=bg guibg=bg         gui=none
+  hi NonText    ctermfg=15 ctermbg=14 guifg=bg                  gui=none
 
-  hi TabLine     guifg='7c7c7c'  guibg=bg gui=none
-  hi TabLineFill guifg='7c7c7c'  guibg=bg gui=none
-  hi TabLineSell guifg='7c7c7c'  guibg=bg gui=none
+  hi TabLine     ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
+  hi TabLineFill ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
+  hi TabLineSell ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
 
   hi TagbarHighlight guibg='#4c4c4c' gui=none
   hi Search guibg='#5c5c5c' guifg='#000000' gui=bold
@@ -369,7 +685,6 @@ function! g:vpm.view.zoom.highlight()   dict "{
 endfunction
 " }
 function! g:vpm.view.zoom.enable()      dict "{
-
 
   exec 'silent! top split '. g:vpm.view.zoom.tbuffer
   let &l:statusline='%{g:vpm.null()}'
@@ -420,26 +735,26 @@ function! g:vpm.view.zoom.toggle()      dict "{
     call self.enable()
   endif
 
-  call g:vpm.curr.focus()
+  call g:vpm.data.curr.term()
 
 endfunction
 
 " }
 
 " }
-" Dict: "g:vpm.view.lines"      {
+" g:vpm.view.lines {
 
 function! g:vpm.view.lines.top()        dict "{
   let line  = ''
   let line .= '%#VPMW#'
   let line .= ' '
-  let line .= g:vpm.curr.item('w').name
+  let line .= g:vpm.data.curr.item('w').name
   let line .= ' '
 
-  let currtab = g:vpm.curr.item('t')
+  let currtab = g:vpm.data.curr.item('t')
 
-  for tab in g:vpm.curr.list('t')
-    
+  for tab in g:vpm.data.curr.list('t')
+
     if tab.name == currtab.name
 
       let line .= '%#VPMTabSel#'
@@ -465,16 +780,16 @@ endfunction
 function! g:vpm.view.lines.bot()        dict "{
   let line  = ''
 
-  let currbuf = g:vpm.curr.item('b')
+  let currbuf = g:vpm.data.curr.item('b')
 
   let line .= '%#VPMT#'
   let line .= ' '
-  let line .= g:vpm.curr.item('t').name
+  let line .= g:vpm.data.curr.item('t').name
   let line .= ' '
 
-  let currbuf = g:vpm.curr.item('b')
+  let currbuf = g:vpm.data.curr.item('b')
 
-  for buf in g:vpm.curr.list('b')
+  for buf in g:vpm.data.curr.list('b')
 
     if buf.name == currbuf.name
 
@@ -498,18 +813,20 @@ function! g:vpm.view.lines.bot()        dict "{
 endfunction
 " }
 function! g:vpm.view.lines.show()       dict "{
+
+  " NOTE: Don't put spaces!
   set tabline=%!g:vpm.view.lines.top()
   set statusline=%!g:vpm.view.lines.bot()
 
-  hi VPMW       guifg='#ffffff' guibg='#000000' gui=none
-  hi VPMTab     guifg='#ffffff' guibg='#1c1c1c' gui=none
-  hi VPMTabSel  guifg='#ffffff' guibg='#5c5c5c' gui=none
-  hi VPMTabFill guifg='#1c1c1c' guibg='#1c1c1c' gui=none
+  hi VPMW       ctermfg=15 ctermbg=0    guifg='#ffffff' guibg='#000000' gui=none
+  hi VPMTab     ctermfg=15 ctermbg=none guifg='#ffffff' guibg='#1c1c1c' gui=none
+  hi VPMTabSel  ctermfg=0  ctermbg=37   guifg='#ffffff' guibg='#5c5c5c' gui=none
+  hi VPMTabFill            ctermbg=none guifg='#1c1c1c' guibg='#1c1c1c' gui=none
 
-  hi VPMT       guifg='#ffffff' guibg='#000000' gui=none
-  hi VPMBuf     guifg='#ffffff' guibg='#1c1c1c' gui=none
-  hi VPMBufSel  guifg='#ffffff' guibg='#5c5c5c' gui=none
-  hi VPMBufFill guifg='#1c1c1c' guibg='#1c1c1c' gui=none
+  hi VPMT       ctermfg=0  ctermbg=37   guifg='#ffffff' guibg='#000000' gui=none
+  hi VPMBuf     ctermfg=15 ctermbg=none guifg='#ffffff' guibg='#1c1c1c' gui=none
+  hi VPMBufSel  ctermfg=0  ctermbg=15   guifg='#ffffff' guibg='#5c5c5c' gui=none
+  hi VPMBufFill            ctermbg=none guifg='#1c1c1c' guibg='#1c1c1c' gui=none
 
   let self.visible = 1
 
@@ -536,191 +853,103 @@ endfunction
 " }
 
 " }
-" Dict: "g:vpm.curr"            {
 
-function! g:vpm.curr.init()           dict "{
+" }
+" g:vpm.patt {
 
-  let g:vpm.curr.w = 0
-  let g:vpm.curr.t = 0
-  let g:vpm.curr.b = 0
+function! g:vpm.patt.init()               "{
+
+  let s = '\s*'
+  let a = '\(.*\)'
+  let f = '\/'
+  let w = '\(\w*\)'
+  let sa = s.a
+  let sas = sa.s
+  let h = '\(\**\)'
+  let shs = s.h.s
+  let self.term = '^'.shs.'term'.sas.':'.sas.'$'
+  let self.buff = '^'.shs.'buff'.sas.':'.sas.'$'
+  let self.tabs = '^'.shs.'tab' . sa         .'$'
+  let self.wksp = '^'.shs.'workspace' . sa   .'$'
+  let self.temp = '^'.a.f.'nvim'.w
+  let self.tail = '^\/*.*\/\(.*\)$'
+  let self.edit = '^'.g:vpm.dirs.path('proj')
+  let self.edit = substitute(self.edit,'\/','\\/','g')
+  let self.edit .= a.'$'
 
 endfunction
-" }
-function! g:vpm.curr.retrieve()       dict "{
+"}
+function! g:vpm.patt.show()               "{
 
-  let self.t = self.item('w').last
-  let self.b = self.item('t').last
-
-endfunction
-" }
-function! g:vpm.curr.close()          dict "{
-
-  " Check Current Position
-  " Close The Current Buffer
-  " Jump to the Last Buffer
-  " Update Structure
+  echo 'term -' string(self.term)
+  echo 'buff -' string(self.buff)
+  echo 'tabs -' string(self.tabs)
+  echo 'wksp -' string(self.wksp)
+  echo 'edit -' string(self.edit)
 
 endfunction
+"}
+
 " }
-function! g:vpm.curr.cycle(step,what) dict "{
 
-  if bufname('%') != self.item('b').path
+" func}
+" Helpers    {
 
-    self.edit()
+function! VPMListProjects(a,l,p)
 
-  else
+ " let layouts = system("ls " . g:vpm.dirs.path('proj'))
+ let layouts = join(g:vpm.dirs.list('projname'),"\n")
 
-    let self[a:what] += a:step
-    let self[a:what]  = self[a:what] % self.len(a:what)
 
-    " Update
-    if a:what == 'b'
 
-      " Update new current buffer position after cycling
-      let g:vpm.wl[self.w].tl[self.t].last = self.b
-
-    elseif a:what == 't'
-
-      " Update new current tab position after cycling
-      let g:vpm.wl[self.w].last = self.t
-
-      " For the new tab, retrieve last buffer position
-      let self.b = self.list('t')[self.t].last
-
-    elseif a:what == 'w'
-
-      " Update new current Workspace position after cycling
-      let g:vpm.last = self.w
-
-      " For the new Workspace, retrieve last tab and buf positions
-      let self.t = g:vpm.wl[self.w].last
-      let self.b = g:vpm.wl[self.w].tl[self.t].last
-
-    endif
-
-  endif
-
+ return layouts
 
 endfunction
-" }
-function! g:vpm.curr.edit()           dict "{
-
-  exec ':edit ' . self.list('b')[self.b].path
-
+function! Found(x)
+  return !empty(a:x)
 endfunction
-" }
-function! g:vpm.curr.focus()          dict "{
-
-  if bufname('%') != g:vpm.term.buf
-    exec ':buffer ' . self.list('b')[self.b].path
-  endif
-
-endfunction
-" }
-function! g:vpm.curr.len(what)        dict "{
-
-  return len(self.list(a:what))
-
-endfunction
-" }
-function! g:vpm.curr.list(what)       dict "{
-
-  if a:what == 'w'
-
-    return g:vpm.wl
-
-  elseif a:what == 't'
-
-    return g:vpm.wl[self.w].tl
-
-  elseif a:what == 'b'
-
-    return g:vpm.wl[self.w].tl[self.t].bl
-
-  endif
-
+function! DoesNotFind(x)
+  return !Found(a:x)
 endfunction
 
-" }
-function! g:vpm.curr.item(what)       dict "{
+"}
+" Commands   {
 
-  if a:what == 'w'
-
-    return g:vpm.wl[self.w]
-
-  elseif a:what == 't'
-
-    return g:vpm.wl[self.w].tl[self.t]
-
-  elseif a:what == 'b'
-
-    return g:vpm.wl[self.w].tl[self.t].bl[self.b]
-
-  endif
-
-endfunction
-
-" }
-
-" }
-
-" }
-" Helpers                       {
-
-function! VPMListWorkSpaces(a,l,p) "{
-
-  let layouts = system("ls " . g:vpm.dir . '/layouts')
-
-  return layouts
-
-endfunction
-" }
-function! g:vpm.test() dict "{
-
-  call self.menu.make()
-
-  call writefile(self.menu.struct,self.menu.path,'S')
-
-  exec 'edit ' .self.menu.path
-
-endfunction
-" }
-
-" }
-" Commands                      {
+command! -nargs=0 VPMEditProjects call g:vpm.edit.proj()
 
 command!
-\ -complete=custom,VPMListWorkSpaces
+\ -complete=custom,VPMListProjects
 \ -nargs=1
-\ VPMLoadLayout
-\ silent! call g:vpm.loadlayout("<args>")
+\ VPMLoadProject
+\ call g:vpm.data.load("<args>")
 
 command!
-\ -complete=custom,VPMListWorkSpaces
-\ -nargs=0
-\ VPMSaveLayout
-\ silent! call g:vpm.savelayout()
+\ -complete=custom,VPMListProjects
+\ -nargs=*
+\ VPMSaveDefault
+\ call g:vpm.save.deft("<args>")
 
-command! -nargs=0 VPMBufNext silent! call g:vpm.cycle(+1,'b')
-command! -nargs=0 VPMBufPrev silent! call g:vpm.cycle(-1,'b')
-command! -nargs=0 VPMTabNext silent! call g:vpm.cycle(+1,'t')
-command! -nargs=0 VPMTabPrev silent! call g:vpm.cycle(-1,'t')
-command! -nargs=0 VPMWspNext silent! call g:vpm.cycle(+1,'w')
-command! -nargs=0 VPMWspPrev silent! call g:vpm.cycle(-1,'w')
 
-command! -nargs=0 VPMZoomToggle         call g:vpm.view.zoom.toggle()
-command! -nargs=0 VPMTestFunc           call g:vpm.test()
-command! -nargs=0 VPMTerminal   silent! call g:vpm.term.edit()
+command! -nargs=0 VPMBufNext call g:vpm.loop(+1,'b')
+command! -nargs=0 VPMBufPrev call g:vpm.loop(-1,'b')
+command! -nargs=0 VPMTabNext call g:vpm.loop(+1,'t')
+command! -nargs=0 VPMTabPrev call g:vpm.loop(-1,'t')
+command! -nargs=0 VPMWspNext call g:vpm.loop(+1,'w')
+command! -nargs=0 VPMWspPrev call g:vpm.loop(-1,'w')
 
-command! -nargs=0 VPMLinesShow   silent! call g:vpm.view.lines.show()
-command! -nargs=0 VPMLinesHide   silent! call g:vpm.view.lines.hide()
-command! -nargs=0 VPMLinesToggle silent! call g:vpm.view.lines.toggle()
+
+command! -nargs=0 VPMTerminal    call g:vpm.term.edit()
+command! -nargs=0 VPMZoomToggle  call g:vpm.view.zoom.toggle()
+command! -nargs=0 VPMLinesToggle call g:vpm.view.lines.toggle()
+
+command! -nargs=0 VPMDevTest call g:vpm.test()
 
 " }
-" Autocommands                  {
+" Autocmds   {
 
-" Coming soon
+" autocmd VimEnter * call g:vpm.default()
 
 " }
 
 call g:vpm.init()
+call g:vpm.deft()

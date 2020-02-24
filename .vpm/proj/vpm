@@ -1,0 +1,16 @@
+workspace VPM Plugin
+
+  tab Main
+    buff Plugin   : plugin/vpm.vim
+    buff init.vim : ~/.config/nvim/init.vim
+
+  tab Meta
+    buff Tasks   : task.txt
+*   buff LICENSE : LICENSE
+
+workspace Docs
+
+  tab Main
+    term Ranger : ranger /usr/share/nvim/runtime/doc
+  tab VimLang
+    buff Eval   : /usr/share/nvim/runtime/doc/eval.txt
