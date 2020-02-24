@@ -2,23 +2,21 @@ master > develop > feat-edit-project-files
 Menu {
 
   Current
+    *feat-user-view*
+
+  Doing
     *feat-edit-project-files*
     *feat-save*
 
-  Done
-    *feat-defaut-project*
-
   Todo
-    *feat-patt-match*
-    *feat-user-colors*
     *feat-skeleton*
     *feat-create-dirs*
     *feat-root-dir*
 
   Issues
-    *load-deft-missing-folder*
 
     Solved
+      *load-deft-missing-folder*
       *wildcard-expand*
       *wildcard-resolve*
 
@@ -26,9 +24,33 @@ Menu {
     *get-script-location*
     *glob-function*
 
+  Done
+    *feat-defaut-project*
+
 }
 Desc {
 
+*feat-user-view*                           {
+
+24 Feb 2020
+
+The user must be able to set the colors and separator characters on the status
+and tab lines. A study will be made to find out which data structure will be
+userd to store the settings and how
+
+The easiest and quickest way for now will be the use if dictionaries in the
+user's `init.vim`.
+
+The attributes
+--------------
+
+- Selected   element        : current buffer and tabs
+- Unselected element        : current buffer and tabs
+- Tabs and status fill      : The part not containing any element
+- Current workspace and tab : 
+
+
+}
 *wildcard-expand*                           {
 
 date 21 Feb 2020
@@ -109,7 +131,7 @@ as default.
 }
 *feat-edit-project-files*                   {
 
-21 Feb 2020
+21 Feb 2020 {
 
 This   feature   regards   the
 ability    of   checking   all
@@ -131,6 +153,12 @@ this  feature will prevent the
 user  from  the need of having
 to  point  the  project  files
 inside themselves.
+}
+24 Feb 2020 {
+
+|issue|: VPMEditProjects when focused on last workspace
+
+}
 
 }
 *feat-save*                                 {

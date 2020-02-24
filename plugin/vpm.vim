@@ -25,10 +25,9 @@ let g:vpm.data.curr = {}
 let g:vpm.term      = {}
 let g:vpm.term.buf  = ''
 
-let g:vpm.view               = {}
-let g:vpm.view.zoom          = {}
-let g:vpm.view.lines         = {}
-let g:vpm.view.lines.visible = 0
+let g:vpm.view              = {}
+let g:vpm.view.zoom         = {}
+let g:vpm.view.line         = {}
 
 " }
 " Functions  {
@@ -321,7 +320,7 @@ function! g:vpm.data.load(file)           "{
     " Edit Current Buffer
     call self.curr.edit()
     " Show Top and Bottom Lines
-    call g:vpm.view.lines.show()
+    call g:vpm.view.line.show()
 
   endif
   "}
@@ -638,13 +637,14 @@ endfunction
 function! g:vpm.view.init() dict "{
 
  call self.zoom.init()
+ call self.line.init()
 
 endfunction
 " }
 
 " g:vpm.view.zoom {
 
-function! g:vpm.view.zoom.init()        dict "{
+function! g:vpm.view.zoom.init()        "{
 
   let self.enabled = get(g: , 'vpm_zoom_enabled' , 0  )
   let self.height  = get(g: , 'vpm_zoom_height'  , 20 )
@@ -665,26 +665,7 @@ function! g:vpm.view.zoom.init()        dict "{
 
 endfunction
 " }
-function! g:vpm.view.zoom.highlight()   dict "{
-
-  hi StatusLine   ctermfg=15 ctermbg=14 guifg='7c7c7c' guibg=bg gui=none
-  hi StatusLineNC ctermfg=15 ctermbg=14 guifg=bg       guibg=bg gui=none
-  hi LineNr       ctermfg=15 ctermbg=14 guibg=bg                gui=none
-
-  hi SignColumn ctermfg=15 ctermbg=14 guibg=bg                  gui=none
-  hi VertSplit  ctermfg=15 ctermbg=14 guifg=bg guibg=bg         gui=none
-  hi NonText    ctermfg=15 ctermbg=14 guifg=bg                  gui=none
-
-  hi TabLine     ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
-  hi TabLineFill ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
-  hi TabLineSell ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
-
-  hi TagbarHighlight guibg='#4c4c4c' gui=none
-  hi Search guibg='#5c5c5c' guifg='#000000' gui=bold
-
-endfunction
-" }
-function! g:vpm.view.zoom.enable()      dict "{
+function! g:vpm.view.zoom.show()        "{
 
   exec 'silent! top split '. g:vpm.view.zoom.tbuffer
   let &l:statusline='%{g:vpm.null()}'
@@ -720,19 +701,19 @@ function! g:vpm.view.zoom.enable()      dict "{
 
 endfunction
 "}
-function! g:vpm.view.zoom.disable()     dict "{
+function! g:vpm.view.zoom.hide()        "{
 
   only
   let self.enabled = 0
 
 endfunction
 "}
-function! g:vpm.view.zoom.toggle()      dict "{
+function! g:vpm.view.zoom.toggle()      "{
 
   if self.enabled
-    call self.disable()
+    call self.hide()
   else
-    call self.enable()
+    call self.show()
   endif
 
   call g:vpm.data.curr.term()
@@ -740,11 +721,34 @@ function! g:vpm.view.zoom.toggle()      dict "{
 endfunction
 
 " }
+function! g:vpm.view.zoom.highlight()   "{
+
+  hi StatusLine   ctermfg=15 ctermbg=14 guifg='7c7c7c' guibg=bg gui=none
+  hi StatusLineNC ctermfg=15 ctermbg=14 guifg=bg       guibg=bg gui=none
+  hi LineNr       ctermfg=15 ctermbg=14 guibg=bg                gui=none
+
+  hi SignColumn ctermfg=15 ctermbg=14 guibg=bg                  gui=none
+  hi VertSplit  ctermfg=15 ctermbg=14 guifg=bg guibg=bg         gui=none
+  hi NonText    ctermfg=15 ctermbg=14 guifg=bg                  gui=none
+
+  hi TabLine     ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
+  hi TabLineFill ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
+  hi TabLineSell ctermfg=15 ctermbg=14 guifg='7c7c00'  guibg=bg gui=none
+
+  hi TagbarHighlight guibg='#4c4c4c' gui=none
+  hi Search guibg='#5c5c5c' guifg='#000000' gui=bold
+
+endfunction
+" }
 
 " }
-" g:vpm.view.lines {
+" g:vpm.view.line {
 
-function! g:vpm.view.lines.top()        dict "{
+function! g:vpm.view.line.init()       dict "{
+  let self.visible = 0
+endfunction
+" }
+function! g:vpm.view.line.top()        dict "{
   let line  = ''
   let line .= '%#VPMW#'
   let line .= ' '
@@ -777,7 +781,7 @@ function! g:vpm.view.lines.top()        dict "{
   return line
 endfunction
 " }
-function! g:vpm.view.lines.bot()        dict "{
+function! g:vpm.view.line.bot()        dict "{
   let line  = ''
 
   let currbuf = g:vpm.data.curr.item('b')
@@ -812,11 +816,11 @@ function! g:vpm.view.lines.bot()        dict "{
   return line
 endfunction
 " }
-function! g:vpm.view.lines.show()       dict "{
+function! g:vpm.view.line.show()       dict "{
 
   " NOTE: Don't put spaces!
-  set tabline=%!g:vpm.view.lines.top()
-  set statusline=%!g:vpm.view.lines.bot()
+  set tabline=%!g:vpm.view.line.top()
+  set statusline=%!g:vpm.view.line.bot()
 
   hi VPMW       ctermfg=15 ctermbg=0    guifg='#ffffff' guibg='#000000' gui=none
   hi VPMTab     ctermfg=15 ctermbg=none guifg='#ffffff' guibg='#1c1c1c' gui=none
@@ -832,7 +836,7 @@ function! g:vpm.view.lines.show()       dict "{
 
 endfunction
 " }
-function! g:vpm.view.lines.hide()       dict "{
+function! g:vpm.view.line.hide()       dict "{
 
   set tabline=%!g:vpm.null()
   set statusline=%!g:vpm.null()
@@ -841,7 +845,7 @@ function! g:vpm.view.lines.hide()       dict "{
 
 endfunction
 " }
-function! g:vpm.view.lines.toggle()     dict "{
+function! g:vpm.view.line.toggle()     dict "{
 
   if self.visible
     call self.hide()
@@ -897,12 +901,7 @@ endfunction
 
 function! VPMListProjects(a,l,p)
 
- " let layouts = system("ls " . g:vpm.dirs.path('proj'))
- let layouts = join(g:vpm.dirs.list('projname'),"\n")
-
-
-
- return layouts
+ return join(g:vpm.dirs.list('projname'),"\n")
 
 endfunction
 function! Found(x)
@@ -940,7 +939,7 @@ command! -nargs=0 VPMWspPrev call g:vpm.loop(-1,'w')
 
 command! -nargs=0 VPMTerminal    call g:vpm.term.edit()
 command! -nargs=0 VPMZoomToggle  call g:vpm.view.zoom.toggle()
-command! -nargs=0 VPMLinesToggle call g:vpm.view.lines.toggle()
+command! -nargs=0 VPMLinesToggle call g:vpm.view.line.toggle()
 
 command! -nargs=0 VPMDevTest call g:vpm.test()
 
