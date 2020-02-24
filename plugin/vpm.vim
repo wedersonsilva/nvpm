@@ -50,7 +50,7 @@ function! g:vpm.null()                    "{
 endfunction
 "}
 function! g:vpm.test()                    "{
-  call self.dirs.list('projname')
+  echo 'alô mundo: versão 2.1.1'
 endfunction
 "}
 function! g:vpm.deft()                    "{
