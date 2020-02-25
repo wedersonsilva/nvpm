@@ -947,6 +947,6 @@ command! -nargs=0 VPMDevTest call g:vpm.test()
 " }
 
 call g:vpm.init()
-if get(g: ,'vpm_load_default',0)
+if get(g: ,'vpm_load_default',1)
   call g:vpm.deft()
 endif
