@@ -73,12 +73,13 @@ endfunction
 "}
 function! g:vpm.loop(s,t)                 "{
 
-  if self.data.loaded
-    call self.data.curr.loop(a:s,a:t)
-    call self.data.curr.edit()
-  else
+  if !g:vpm.data.loaded
     echo 'Load project first [:VPMLoadProject]'
+    return -1
   endif
+
+  call self.data.curr.loop(a:s,a:t)
+  call self.data.curr.edit()
 
 endfunction
 "}
@@ -95,6 +96,11 @@ function! g:vpm.edit.init()               "{
 
 endfunction "}
 function! g:vpm.edit.proj()               "{
+
+  if !g:vpm.data.loaded
+    echo 'Load project first [:VPMLoadProject]'
+    return -1
+  endif
 
   if self.mode 
     call g:vpm.data.load(self.currname)
@@ -941,4 +947,6 @@ command! -nargs=0 VPMDevTest call g:vpm.test()
 " }
 
 call g:vpm.init()
-call g:vpm.deft()
+if get(g: ,'vpm_load_default',0)
+  call g:vpm.deft()
+endif

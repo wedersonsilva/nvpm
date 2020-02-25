@@ -10,8 +10,10 @@ workspace VPM Plugin
 
 workspace Docs
 
-  *tab Main
+  tab VimLang
+    buff Eval : /usr/share/nvim/runtime/doc/eval.txt
+    buff Map  : /usr/share/nvim/runtime/doc/map.txt
+
+   tab Main
     term Ranger : ranger /usr/share/nvim/runtime/doc
 
-  tab VimLang
-    buff Eval   : /usr/share/nvim/runtime/doc/eval.txt
