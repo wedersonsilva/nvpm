@@ -73,11 +73,12 @@ endfunction
 "}
 function! g:vpm.loop(s,t)                 "{
 
-  " Cycle Whatever
-  call self.data.curr.loop(a:s,a:t)
-
-  " Edit Buffer of New Position
-  call self.data.curr.edit()
+  if self.data.loaded
+    call self.data.curr.loop(a:s,a:t)
+    call self.data.curr.edit()
+  else
+    echo 'Load project first [:VPMLoadProject]'
+  endif
 
 endfunction
 "}
@@ -638,6 +639,12 @@ function! g:vpm.view.init() "{
 
  call self.zoom.init()
  call self.line.init()
+
+ let p = {}
+
+ let p.wksp = {}
+ let p.tabs = {}
+ let p.buff = {}
 
 endfunction
 " }
