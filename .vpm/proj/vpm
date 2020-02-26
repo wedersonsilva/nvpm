@@ -1,4 +1,4 @@
-workspace VPM Plugin |
+workspace VPM Plugin
 
   tab Main
     buff Plugin   : plugin/vpm.vim
@@ -9,7 +9,7 @@ workspace VPM Plugin |
     buff Tasks   : task.txt
 *   buff LICENSE : LICENSE
 
-workspace Docs |
+workspace Docs
 
   tab VimLang
     buff Eval    : /usr/share/nvim/runtime/doc/eval.txt

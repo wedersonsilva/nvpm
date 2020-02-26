@@ -35,6 +35,7 @@ function! g:vpm.init()                    "{
   let g:vpm.loaded    = 1
 
   call self.patt.init()
+  call self.line.init()
   call self.data.init()
   call self.temp.init()
   call self.edit.init()
@@ -444,23 +445,37 @@ endfunction
 
 function! g:vpm.line.init() "{
   let self.visible = 0
+  let enclosure   = {}
+  let enclosure.s = {}
+  let enclosure.u = {}
+  let enclosure.s.w = {'l':'(','r':')'}
+  let enclosure.u.w = {'l':' ','r':' '}
+  let enclosure.s.t = {'l':'[','r':']'}
+  let enclosure.u.t = {'l':' ','r':' '}
+  let enclosure.s.b = enclosure.s.t
+  let enclosure.u.b = enclosure.u.t
+  let g:vpm.line.enclosure = get(g: , 'vpm_line_enclosure' , enclosure)
 endfunction "}
 function! g:vpm.line.tabs() "{
   let line  = ''
   let line .= '%#VPMW#'
-  let line .= ' '
+  let line .= self.enclosure.s.w.l
   let line .= g:vpm.data.curr.item('w').name
-  let line .= ' '
+  let line .= self.enclosure.s.w.r
 
   let currtab = g:vpm.data.curr.item('t')
 
   for tab in g:vpm.data.curr.list('t')
     if tab.name == currtab.name
       let line .= '%#VPMTabSel#'
-      let line .= '['.tab.name.']'
+      let line .= self.enclosure.s.t.l
+      let line .= tab.name
+      let line .= self.enclosure.s.t.r
     else
       let line .= '%#VPMTab#'
-      let line .= ' '.tab.name.' '
+      let line .= self.enclosure.u.t.l
+      let line .= tab.name
+      let line .= self.enclosure.u.t.r
     endif
   endfor
 
@@ -474,20 +489,17 @@ function! g:vpm.line.buff() "{
 
   let currbuf = g:vpm.data.curr.item('b')
 
-  " Show selected tab
-  " let line .= '%#VPMT#'
-  " let line .= ' '
-  " let line .= g:vpm.data.curr.item('t').name
-
-  let currbuf = g:vpm.data.curr.item('b')
-
   for buf in g:vpm.data.curr.list('b')
     if buf.name == currbuf.name
       let line .= '%#VPMBufSel#'
-      let line .= '['.buf.name.']'
+      let line .= self.enclosure.s.b.l
+      let line .= buf.name
+      let line .= self.enclosure.s.b.r
     else
       let line .= '%#VPMBuf#'
-      let line .= ' '.buf.name.' '
+      let line .= self.enclosure.u.b.l
+      let line .= buf.name
+      let line .= self.enclosure.u.b.r
     endif
   endfor
 
