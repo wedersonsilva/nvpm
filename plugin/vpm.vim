@@ -48,7 +48,6 @@ function! g:vpm.null()                    "{
 endfunction
 "}
 function! g:vpm.test()                    "{
-  echo 'alô mundo: versão 2.1.1'
 endfunction
 "}
 function! g:vpm.deft()                    "{
@@ -805,16 +804,9 @@ command!
 \ VPMSaveDefault
 \ call g:vpm.save.deft("<args>")
 
-
 command! -complete=custom,VPMNextPrev -nargs=1 VPMNext call g:vpm.loop(+1,"<args>")
 command! -complete=custom,VPMNextPrev -nargs=1 VPMPrev call g:vpm.loop(-1,"<args>")
 
-command! -nargs=0 VPMBufNext call g:vpm.loop(+1,'b')
-command! -nargs=0 VPMBufPrev call g:vpm.loop(-1,'b')
-command! -nargs=0 VPMTabNext call g:vpm.loop(+1,'t')
-command! -nargs=0 VPMTabPrev call g:vpm.loop(-1,'t')
-command! -nargs=0 VPMWspNext call g:vpm.loop(+1,'w')
-command! -nargs=0 VPMWspPrev call g:vpm.loop(-1,'w')
 command! -nargs=0 VPMTerminal    call g:vpm.term.edit()
 command! -nargs=0 VPMDevTest call g:vpm.test()
 
