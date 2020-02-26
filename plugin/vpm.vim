@@ -592,19 +592,19 @@ function! g:vpm.edit.proj()               "{
     let buff  = 'buff '.name.':'.project
     let lines = add(lines,buff)
   endfor
-  let lines = add(lines,'tab [EditTerminal]')
+  let lines = add(lines,'tab Edit-Terminal')
   let lines = add(lines,'term Terminal:bash')
   
   " Give priority to current loaded project
   if Found(currpath)
     let name  = matchlist(currpath,g:vpm.patt.edit)
     let name  = [currpath,name[1]][Found(name)]
-    let lines = ['buff [*] '.name.':'.currpath] + lines
+    let lines = ['buff * '.name.':'.currpath] + lines
   endif
 
   " Pre-append tab and workspace lines
-  let lines = ['tab       [ Project Files ]'    ] + lines
-  let lines = ['workspace [ VPM Edit Projects ]'] + lines
+  let lines = ['tab       Project Files'    ] + lines
+  let lines = ['workspace VPM Edit Projects'] + lines
 
   call writefile(lines,self.path)
 
@@ -654,7 +654,12 @@ function! g:vpm.save.deft(p)              "{
     endif
   endif
 
-  call writefile([proj],dest)
+  if writefile([proj],dest) == 0
+    echo "VPM: Saved default projet [".proj."] at location. ".dest
+  else
+    echo "VPM: Failed to save default projet [".proj."] at location. ".dest"
+    echo "Location is missing or doesn't have write permition"
+  endif
 
 endfunction "}
 
@@ -813,7 +818,7 @@ command!
 command!
 \ -complete=custom,VPMListProjects
 \ -nargs=*
-\ VPMSaveDefault
+\ VPMSaveDefaultProject
 \ call g:vpm.save.deft("<args>")
 
 command! -complete=custom,VPMNextPrev -nargs=1 VPMNext call g:vpm.loop(+1,"<args>")

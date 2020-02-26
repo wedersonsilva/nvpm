@@ -3,10 +3,11 @@ workspace VPM Plugin
   tab Main
     buff Plugin   : plugin/vpm.vim
     buff init.vim : ~/.config/nvim/init.vim
-*   term terminal : bash
+    term terminal : 
 
   tab Meta
     buff Tasks   : task.txt
+    buff README  : README.md
 *   buff LICENSE : LICENSE
 
 workspace Docs

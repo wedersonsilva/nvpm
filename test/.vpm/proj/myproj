@@ -1,0 +1,31 @@
+
+workspace Code
+
+  tab Main
+    buff Main     : src/main.c
+    buff Common   : src/common.c
+    buff Makefile : Makefile
+*   term Terminal : bash
+
+  tab Module-01
+    buff  Source : src/module-01.c
+    buff  Header : src/module-01.h
+    buff TSource : test/module-01.c
+    buff THeader : test/module-01.h
+
+* tab Module-02
+    buff  Source : src/module-02.c
+    buff  Header : src/module-02.h
+    buff TSource : test/module-02.c
+    buff THeader : test/module-02.h
+
+* workspace Meta
+
+  tab Scripts
+    buff   Install : bin/install.sh
+    buff UnInstall : bin/uninstall.sh
+
+  tab Documentations
+    buff README    : README.md
+    buff Module-01 : doc/module-01.txt
+    buff Module-02 : doc/module-02.txt
