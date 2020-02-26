@@ -1,18 +1,21 @@
-workspace VPM Plugin
+workspace VPM Plugin |
 
   tab Main
     buff Plugin   : plugin/vpm.vim
     buff init.vim : ~/.config/nvim/init.vim
+*   term terminal : bash
 
   tab Meta
     buff Tasks   : task.txt
 *   buff LICENSE : LICENSE
 
-workspace Docs
+workspace Docs |
 
   tab VimLang
-    buff Eval : /usr/share/nvim/runtime/doc/eval.txt
-    buff Map  : /usr/share/nvim/runtime/doc/map.txt
+    buff Eval    : /usr/share/nvim/runtime/doc/eval.txt
+    buff Map     : /usr/share/nvim/runtime/doc/map.txt
+    buff Windows : /usr/share/nvim/runtime/doc/windows.txt
+    buff options : /usr/share/nvim/runtime/doc/options.txt
 
    tab Main
     term Ranger : ranger /usr/share/nvim/runtime/doc
