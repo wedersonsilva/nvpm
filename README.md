@@ -121,11 +121,11 @@ Algumas ressalvas:
 
 1) cada instrução é dada em uma única linha
 2) cada instrução pode ter espaçoes antes e entre palavras
-3) os nomes das coisas podem ter qualquer caracte
+3) os nomes das coisas podem ter qualquer caractere
 4) se quiseres criar um terminal sem comandos, crie-o da seguinte forma: "term \<nome-do-terminal\> :". Perceba que deve conter o ":"
 
 ### Desativador de subestruturas
-Para desativar uma subestrutura, podemos usar o operador "*" (asterísco) na frente da palavra reservada. O efeito disso é que a estrutura após "*", bem como as subestruturas daquela hierarquia não serão considerados ao carregar o arquivo de projeto. Pense nesta ação como uma forma de podar a árvore momentâneamente. No nosso exemplo:
+Para desativar uma subestrutura, podemos usar o operador "\*" (asterísco) na frente da palavra reservada. O efeito disso é que a estrutura após "\*", bem como as subestruturas daquela hierarquia não serão considerados ao carregar o arquivo de projeto. Pense nesta ação como uma forma de podar a árvore momentâneamente. No nosso exemplo:
 
 ```text
 workspace Code
@@ -231,7 +231,7 @@ _Quando acionado de dentro do modo de edição de meta-arquivos, VPM retorna par
 
 _Se o meta-arquivo de projeto que corresponde ao projeto carregado por `:VPMLoadProject` for alterado, VPM aplicará as devidas mudanças._
 
-_Um "* (asterísco)" será colocado na frente do nome do meta-arquivo carregado._
+_Um "\* (asterísco)" será colocado na frente do nome do meta-arquivo carregado._
 
 [comment]: --------
 
