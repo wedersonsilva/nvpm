@@ -1,9 +1,12 @@
 # Introdução
 Este plugin permite o planejamento e navegação de arquivos de forma independente da forma com que o Vim/Neovim organiza os arquivos.
 
-O uso deste plugin só se justifica se houver a necessidade de mapear vários arquivos ao mesmo tempo. Considere o exemplo onde se quer mapear o seguinte projeto C:
+Seu uso é feito baseando-se na manipulação da meta-informação contida em todo projeto de software, seja ele grande ou pequeno. Meta-informação é toda informação que descreve outra informação, sendo esta última o projeto em si. 
+
+Considere o exemplo onde se quer mapear o seguinte projeto C, hipoteticamente localizado em `~/Projetos/libc`:
 
 ```console
+$tree ~/Projetos/libc
 .
 ├── bin
 │   ├── install.sh
@@ -29,31 +32,62 @@ O uso deste plugin só se justifica se houver a necessidade de mapear vários ar
 
 Tanto o Vim quanto o Neovim (e editores de texto em geral) organizam os arquivos sendo abertos em uma lista circular, geralmente apresentados em abas separadas cujo o nome de cada aba faz alguma referência ao arquivo em questão. Algo como:
 
-```console
+```text
 |file-01.txt|file-02.txt|file-03.txt|...|last-file.txt|
 ```
 
-o problema dessa abordagem quando estamos lidando com um projeto grande, como o exemplo acima, é que fica difícil de mapear todos eles ao mesmo tempo pelos seguintes motivos:
+o problema dessa abordagem quando estamos lidando com um projeto grande, é que fica difícil de mapear todos eles ao mesmo tempo pelos seguintes motivos:
 
 1) Categorias diferentes: código fonte, scripts, documentação, etc
 2) Hieraquias diferentes: pastas e sub-pastas
 3) Curta memória humana : Não conseguimos lembrar muitas  posições na lista
 4) Consome a largura da tela
 
-isso ocorre porque ao organizar os arquivos desta forma, estamos os organizando de forma linear, e consequentemente teremos apenas 1 (um) grau de liberdade de como dispor tais arquivos.
+Em outras palavras, ao organizar os arquivos desta forma, apenas 1 (um) grau de liberdade está sendo usado ao apresentá-los na tela.
 
-Portanto, a proposta do VPM é a de servir como a terceira mão que você nunca teve, ou seja, vai ajudá-lo a contornar o problema descrito.
+Portanto, a proposta do NVPM é a de aumentar o número de graus de liberdade.
 
-# Como usar o VPM
+# Como usar o NVPM
 
-O uso do VPM consiste das seguintes etapas:
+O uso do NVPM consiste das seguintes etapas:
 
-1) Criar um ou mais meta-arquivos de projetos
-2) Carregar um meta-arquivo
-3) Acionar um comando do VPM
+1) Criar um ou mais arquivos de projetos
+2) Carregar um arquivo de projeto
+3) Acionar um comando do NVPM
 
-### Meta-arquivos
-Considerando o projeto em C descrito na introdução, um possível arquivo de projeto seria o seguinte:
+### Arquivos descritor projetos
+Cada projeto pode ter um ou mais arquivos de projetos. Estes, por sua vez ficam localizados, por padrão, no diretório `.nvpm/proj/`. Um arquivo de projeto pode ter qualquer nome e qualquer extensão. Se por exemplo, o caminho de um de seus projetos for `~/Projetos/libc`, então o diretório `~/Projetos/libc/.nvpm/proj` deverá ser criado. Em outras palavras, cada projeto deverá ter o diretório `.nvpm/proj/` a partir de sua raíz.
+
+Considerando o projeto em C descrito na introdução, poderíamos criar um arquivo de projeto de nome `libc-code`, que por sua vez deve estar localizado em `~/Projetos/libc/.nvpm/proj/libc-code`.
+
+### Sintaxe dos arquivos de projetos
+A síntaxe para escrever os arquivos de projeto é bastante simples, contando com 4 (quatro) palavras reservadas, sendo elas: "workspace", "tab", "buff" e "term"
+
+* Palavra "workspace" : 
+
+  workspace \<nome-do-workspace\>
+
+* Palavra "tab" : 
+
+  tab \<nome-da-aba\>
+
+* Palavra "buff" : 
+
+  buff \<nome-do-buffer\> : caminho/até/o/arquivo
+
+* Palavra "term" : 
+
+  term \<nome-do-terminal\> : \<commando-a-ser-executado\>
+
+Algumas ressalvas:
+
+1) cada instrução é dada em uma única linha
+2) cada instrução pode ter espaços antes, depois e entre palavras
+3) os nomes das coisas podem ter quaisquer caracteres
+4) se quiseres criar um terminal sem comandos, crie-o da seguinte forma: "term \<nome-do-terminal\> :". Perceba que deve conter o ":"
+5) NVPM ainda não conta com checadores de erros. Se você errar a síntaxe, provavelmente terás que fechar e reabrir o editor. Porém garanto que nenhuma operação de deleção ou sobreescrita de arquivos são aplicadas.
+
+A seguir temos um possível exemplo para o conteúdo do arquivo `~/Projetos/libc/.nvpm/proj/libc-code`.
 
 ```text
 workspace Code
@@ -88,41 +122,15 @@ workspace Meta
     buff Module-02 : doc/module-02.txt
 ```
 
-que produzirá o resultado 
+que produzirá os resultado 
 
-![My Project](img/my-proj-1.png)
+![libc-code-(Workspace Code)](.img/my-proj-1.png)
 
-![My Project](img/my-proj-2.png)
+![libc-code-(Workspace Meta)](.img/my-proj-2.png)
 
 Desta forma, o usuário será apresentado com as informações escritas no arquivos de projetos, porém em vez de eles serem apresentados de forma linear, o usuário terá a visão deles em 3 (três) graus de liberdade, por cada arquivo de projeto escrito, de forma que os arquivos ficarão dispostos em forma de árvore, onde cada galho representa uma hierarquia.
 
-### Sintaxe para meta-arquivos
-Todos os projetos deverão ser guardados dentro do diretório `.vpm/proj`. No exemplo acima eu criei o arquivo `.vpm/proj/myproj` contendo exatamente o conteúdo mostrado lá.
-
-De uma forma geral, sintaxe `VPM` para os meta-arquivos possui 4 (quatro) palavras reservadas: "workspace", "tab", "buff" e "term"
-
-* Palavra "workspace" : 
-
-  workspace \<nome-do-workspace\>
-
-* Palavra "tab" : 
-
-  tab \<nome-da-aba\>
-
-* Palavra "buff" : 
-
-  buff \<nome-do-buffer\> : caminho/até/o/arquivo
-
-* Palavra "term" : 
-
-  term \<nome-do-terminal\> : \<commando-a-ser-executado\>
-
-Algumas ressalvas:
-
-1) cada instrução é dada em uma única linha
-2) cada instrução pode ter espaçoes antes e entre palavras
-3) os nomes das coisas podem ter qualquer caractere
-4) se quiseres criar um terminal sem comandos, crie-o da seguinte forma: "term \<nome-do-terminal\> :". Perceba que deve conter o ":"
+[comment]: imagem-da-árvore
 
 ### Desativador de subestruturas
 Para desativar uma subestrutura, podemos usar o operador "\*" (asterísco) na frente da palavra reservada. O efeito disso é que a estrutura após "\*", bem como as subestruturas daquela hierarquia não serão considerados ao carregar o arquivo de projeto. Pense nesta ação como uma forma de podar a árvore momentâneamente. No nosso exemplo:
@@ -162,7 +170,7 @@ workspace Code
 
 que por sua vez produzirá o seguinte:
 
-![My Project](img/my-proj-3.png)
+![My Project](.img/my-proj-3.png)
 
 No caso, as estruturas de nome:
 
@@ -174,103 +182,101 @@ No caso, as estruturas de nome:
 foram desconectadas, ou podadas, ou ainda não carregadas.
 
 # Comandos 
-As funcionalidades do VPM são acessadas pelos seguintes comandos: 
+As funcionalidades do NVPM são acessadas pelos seguintes comandos: 
 
 ```text
-:VPMLoadProject
-:VPMSaveDefault
-:VPMEditProjects
-:VPMTerminal
-:VPMNext
-:VPMPrev
+:NVPMLoadProject
+:NVPMSaveDefault
+:NVPMEditProjects
+:NVPMTerminal
+:NVPMNext
+:NVPMPrev
 ```
 
 Ou seja, em modo normal entre no modo de comando do Vim/Neovim aperdando **":"** e entre com um dos comandos acima.
 
-## Comando _:VPMLoadProject_
+## Comando _:NVPMLoadProject_
 
 ### Argumentos: 
-_Apenas 1 (um) e obrigatório. Completável com tab, que lista os arquivos dentro de `/path/to/project/.vpm/proj/`_
+_Apenas 1 (um) e obrigatório. Completável com tab, que lista os arquivos dentro de `/path/to/project/.nvpm/proj/`_
 
 ### Síntaxe: 
-`:VPMLoadProject <nome-do-meta-arquivo>`
+`:NVPMLoadProject <nome-do-arquivo-de-projeto>`
 
 ### Ação : 
-_Carrega um meta-arquivo descritor de projeto localizado em `/path/to/project/.vpm/proj/<nome-do-meta-arquivo>`_
+_Carrega um arquivo descritor de projeto localizado em `/path/to/project/.nvpm/proj/<nome-do-arquivo-de-projeto>`_
 
 [comment]: --------
 
-## Comando _:VPMSaveDefaultProject_
+## Comando _:NVPMSaveDefaultProject_
 
 ### Argumentos: 
-_Apenas 1 (um) e opcional. Completável com tab, que lista os arquivos dentro de `/path/to/project/.vpm/proj/`._
+_Apenas 1 (um) e opcional. Completável com tab, que lista os arquivos dentro de `/path/to/project/.nvpm/proj/`._
 
-_Se nenhum nome de meta-arquivo de projeto for escolhido, VPM salvará o projet carregado no momento._
+_Se nenhum nome de arquivo de projeto for escolhido, NVPM salvará o projeto carregado no momento._
 
 ### Síntaxe: 
-`:VPMSaveDefaultProject <nome-do-meta-arquivo>`
+`:NVPMSaveDefaultProject <nome-do-arquivo-de-projeto>`
 
 ### Ação : 
-_Salva um meta-arquivo descritor de projeto localizado em `/path/to/project/.vpm/proj/<nome-do-meta-arquivo>` como projeto padrão a ser carregado ao iniciar o Vim/Neovim de dentro do diretório `/path/to/proj/`_
+_Salva um arquivo descritor de projeto localizado em `/path/to/project/.nvpm/proj/<nome-do-arquivo-de-projeto>` como projeto padrão a ser carregado ao iniciar o Vim/Neovim de dentro do diretório `/path/to/proj/`_
 
 [comment]: --------
 
-## Comando _:VPMEditProjects_
+## Comando _:NVPMEditProjects_
 OBS: Funciona apenas no Neovim por enquanto.
 
 ### Argumentos: 
 _0 (zero/nenhum)_ 
 
 ### Síntaxe: 
-`:VPMEditProjects <enter>`
+`:NVPMEditProjects <enter>`
 
 ### Ação : 
-_Abre um workspace temporário para a edição dos meta-arquivos de projetos presentes. Também cria um terminal em outra que permite o usuário fazer manipulações em seu projeto, compatíveis com as mudanças a serem feitas neste modo._
+_Abre um workspace temporário para a edição dos arquivos de projetos presentes. Também cria um terminal em outra aba que permite o usuário fazer manipulações em seu projeto, compatíveis com as mudanças a serem feitas neste modo._
 
-_Quando acionado de dentro do modo de edição de meta-arquivos, VPM retorna para o último buffer que estava em foco antes do comando ser acionado pela primeira vez (função toggle)._
+_Se o arquivo de projeto que corresponde ao projeto carregado por `:NVPMLoadProject` for alterado, NVPM aplicará as devidas mudanças e recarregará o mesmo arquivo de projeto._
 
-_Se o meta-arquivo de projeto que corresponde ao projeto carregado por `:VPMLoadProject` for alterado, VPM aplicará as devidas mudanças._
-
-_Um "\* (asterísco)" será colocado na frente do nome do meta-arquivo carregado._
+_Um "\* (asterísco)" será colocado na frente do nome do arquivo carregado._
 
 [comment]: --------
 
-## Comando _:VPMTerminal_
+## Comando _:NVPMTerminal_
 
 ### Argumentos: 
 _0 (zero/nenhum)_ 
 
 ### Síntaxe: 
-`:VPMTerminal <enter>`
+`:NVPMTerminal <enter>`
 
 ### Ação : 
 _Abre um terminal coringa que pode ser lançado de qualquer lugar e em qualquer momento._
 
 [comment]: --------
 
-## Comando _:VPMNext_
+## Comando _:NVPMNext_
 
 ### Argumentos: 
 _Apenas 1 (um) e obrigatório. Completável com tab, que lista dentre as 3 (três) possíveis estruturas iteráveis da árvore, sendo elas: "workspace", "tab" ou "buffer". Terminais também são considerados como buffers neste caso_
 
 ### Síntaxe: 
-`:VPMNext <workspace-tab-buffer>`
+`:NVPMNext <workspace-tab-buffer>`
 
 ### Ação : 
-_Avança um elemento de mesma hierarquia na árvore do VPM._
+_Avança um elemento de mesma hierarquia na árvore do NVPM._
 
 [comment]: --------
 
-## Comando _:VPMPrev_
+## Comando _:NVPMPrev_
 
 ### Argumentos: 
 _Apenas 1 (um) e obrigatório. Completável com tab, que lista dentre as 3 (três) possíveis estruturas iteráveis da árvore, sendo elas: "workspace", "tab" ou "buffer". Terminais também são considerados como buffers neste caso._
 
 ### Síntaxe: 
-`:VPMPrev <workspace-tab-buffer>`
+`:NVPMPrev <workspace-tab-buffer>`
 
 ### Ação : 
-_Retorna um elemento de mesma hierarquia na árvore do VPM._
+_Retorna um elemento de mesma hierarquia na árvore do NVPM._
 
 # Mapeamento de teclas (Mappings)
 
@@ -296,38 +302,48 @@ mt : abre terminal coringa
 Atualmente os meus mapeamentos são o seguinte:
 
 ```vim
-  nmap  <space> :VPMNext buffer<cr>
-  nmap m<space> :VPMPrev buffer<cr>
-  nmap  <tab>   :VPMNext tab<cr>
-  nmap m<tab>   :VPMPrev tab<cr>
-  nmap <c-n>    :VPMNext workspace<cr>
-  nmap <c-b>    :VPMPrev workspace<cr>
-  nmap mt       :VPMTerminal<cr>
-  nmap <F9>     :VPMSaveDefaultProject<space>
-  nmap <F10>    :VPMLoadProject<space>
-  nmap <F12>    :VPMEditProjects<cr>
-  nmap <F8>     :VPMDevTest<cr>
+  nmap  <space> :NVPMNext buffer<cr>
+  nmap m<space> :NVPMPrev buffer<cr>
+  nmap  <tab>   :NVPMNext tab<cr>
+  nmap m<tab>   :NVPMPrev tab<cr>
+  nmap <c-n>    :NVPMNext workspace<cr>
+  nmap <c-b>    :NVPMPrev workspace<cr>
+  nmap mt       :NVPMTerminal<cr>
+  nmap <F9>     :NVPMSaveDefaultProject<space>
+  nmap <F10>    :NVPMLoadProject<space>
+  nmap <F12>    :NVPMEditProjects<cr>
+  nmap <F8>     :NVPMDevTest<cr>
 ```
 
 # Algumas observações
 
 ## set hidden
-Se esta opção não estiver setada, um erro ocorrerá quando tentares passar de um buffer para outro caso o atual esteja modificado. Isso não é um bug, pois o Vim/Neovim foi construido dessa forma (ver `:help hidden`). Então, colocar em seu arquivo de configuração o seguinte
+Se esta opção não estiver setada, um erro ocorrerá quando tentares passar de um buffer para outro caso o atual esteja modificado. Isso não é um bug, pois o Vim/Neovim foi construido dessa forma (ver `:help hidden`). Ao mudar de buffer você não perde as alterações feitas no buffer anterior. 
+
+Então a opção a seguir deve estar no seu vimrc ou init.vim.
 
 ```vim
   set hidden
 ```
 
 ## showtabline=2
-Esta opção deixa a barra de abas (tabline) sempre visível.
+Esta opção deixa a barra de abas (tabline) sempre visível. Futuras versões vão eliminar a necessidade do usuário ter esta opção setada de forma global.
 
 ```vim
   set showtabline=2
 ```
 
-## g:vpm_load_default
+## g:nvpm_load_default (zero ou outro)
 Esta opção desativa a função de carregar projetos por padrão quando setada com `0 (zero)`. O seu valor padrão é `1 (um).`
 
 ```vim
-  let g:vpm_load_default = 1
+  let g:nvpm_load_default = 1
+```
+
+## g:nvpm_local_dir (String)
+
+Esta variável guarda o nome do subdiretório do NVPM dentro de cada projeto. Seu valor padrão é `'.nvpm'`
+  
+```vim
+  let g:nvpm_local_dir = '.nvpm'
 ```

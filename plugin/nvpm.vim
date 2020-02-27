@@ -1,38 +1,38 @@
-if exists('g:vpm.loaded')
-  echo 'VPM was already loaded. Closing...'
+if exists('g:nvpm.loaded')
+  echo 'nvpm was already loaded. Closing...'
   finish
 endif
 
 " Variables  {
 
-let g:vpm = {}
+let g:nvpm = {}
 
-let g:vpm.temp = {} 
-let g:vpm.save = {}
-let g:vpm.edit = {}
-let g:vpm.patt = {}
-let g:vpm.line = {}
+let g:nvpm.temp = {} 
+let g:nvpm.save = {}
+let g:nvpm.edit = {}
+let g:nvpm.patt = {}
+let g:nvpm.line = {}
 
-let g:vpm.data      = {}
-let g:vpm.data.make = {}
-let g:vpm.data.curr = {}
+let g:nvpm.data      = {}
+let g:nvpm.data.make = {}
+let g:nvpm.data.curr = {}
 
-let g:vpm.dirs = {}
-let g:vpm.dirs.vpm  = get( g:vpm , 'vpm'  , '.vpm'   )
-let g:vpm.dirs.main = get( g:vpm , 'main' , '~/.vpm' )
-let g:vpm.dirs.proj = 'proj'
+let g:nvpm.dirs = {}
+let g:nvpm.dirs.nvpm = get( g: , 'nvpm_local_dir'  , '.nvpm'  )
+let g:nvpm.dirs.main = get( g: , 'nvpm_main_dir' , '~/.nvpm' )
+let g:nvpm.dirs.proj = 'proj'
 
-let g:vpm.term      = {}
+let g:nvpm.term      = {}
 
 
 " }
 " Functions  {
 
-" g:vpm      {
+" g:nvpm      {
 
-function! g:vpm.init()                    "{
+function! g:nvpm.init()                    "{
 
-  let g:vpm.loaded    = 1
+  let g:nvpm.loaded    = 1
 
   call self.patt.init()
   call self.line.init()
@@ -44,14 +44,14 @@ function! g:vpm.init()                    "{
 
 endfunction
 "}
-function! g:vpm.null()                    "{
+function! g:nvpm.null()                    "{
   return ''
 endfunction
 "}
-function! g:vpm.test()                    "{
+function! g:nvpm.test()                    "{
 endfunction
 "}
-function! g:vpm.deft()                    "{
+function! g:nvpm.deft()                    "{
 
   let root = self.dirs.path('root')
 
@@ -61,8 +61,8 @@ function! g:vpm.deft()                    "{
     let project = readfile(file)[0]
     if Found(project)
       call self.data.load(project)
-      if g:vpm.data.loaded
-        echo "VPM: Loaded default project: " . project
+      if g:nvpm.data.loaded
+        echo "NVPM: Loaded default project: " . project
         echo "Press any key to start!"
       endif
     endif
@@ -70,10 +70,10 @@ function! g:vpm.deft()                    "{
 
 endfunction
 "}
-function! g:vpm.loop(s,t)                 "{
+function! g:nvpm.loop(s,t)                 "{
 
-  if !g:vpm.data.loaded
-    echo 'Load project first [:VPMLoadProject]'
+  if !g:nvpm.data.loaded
+    echo 'Load project first [:NVPMLoadProject]'
     return -1
   endif
 
@@ -84,18 +84,18 @@ endfunction
 "}
 
 "}
-" g:vpm.data {
+" g:nvpm.data {
 
-" g:vpm.data.*    {
+" g:nvpm.data.*    {
 
-function! g:vpm.data.init()               "{
+function! g:nvpm.data.init()               "{
   let self.loaded = 0
   let self.last = 0
   let self.path = ''
   call self.curr.init()
 endfunction
 "}
-function! g:vpm.data.show()               "{
+function! g:nvpm.data.show()               "{
 
   for wksp in self.proj
     echo 'w' wksp.name
@@ -115,21 +115,21 @@ endfunction
 "}
 
 " misc }
-" g:vpm.data.load {
+" g:nvpm.data.load {
 
-function! g:vpm.data.load(file)           "{
+function! g:nvpm.data.load(file)           "{
 
   " Variables                       {
   let workspaces = []
-  let patt       = g:vpm.patt.wksp
+  let patt       = g:nvpm.patt.wksp
 
   " Edit project files 
-  let g:vpm.edit.mode = a:file == g:vpm.edit.path
-  let path = g:vpm.edit.mode ? '' : g:vpm.dirs.path('proj')
+  let g:nvpm.edit.mode = a:file == g:nvpm.edit.path
+  let path = g:nvpm.edit.mode ? '' : g:nvpm.dirs.path('proj')
   let path = resolve(expand(path.a:file))
 
   if !filereadable(path)
-    echo "VPM: default project '".path."' is unreadable or missing"
+    echo "NVPM: default project '".path."' is unreadable or missing"
     return -1
   endif
   "}
@@ -164,14 +164,14 @@ function! g:vpm.data.load(file)           "{
     " Edit Current Buffer
     call self.curr.edit()
     " Show Top and Bottom Lines
-    call g:vpm.line.show()
+    call g:nvpm.line.show()
 
   endif
   "}
 
 endfunction
 " load }
-function! g:vpm.data.wksp(match,index)    "{
+function! g:nvpm.data.wksp(match,index)    "{
 
   " Capture workspace meta-data                 {
   let i                = a:index
@@ -186,8 +186,8 @@ function! g:vpm.data.wksp(match,index)    "{
   for j in range(i+1,len(self.file)-1)
     " Line matching {
     let line = self.file[j]
-    let awkspmatch = matchlist(line,g:vpm.patt.wksp)
-    let atabmatch  = matchlist(line,g:vpm.patt.tabs)
+    let awkspmatch = matchlist(line,g:nvpm.patt.wksp)
+    let atabmatch  = matchlist(line,g:nvpm.patt.tabs)
     "}
 
     if Found(awkspmatch)
@@ -206,7 +206,7 @@ function! g:vpm.data.wksp(match,index)    "{
 
 endfunction
 "}
-function! g:vpm.data.tabs(match,index)    "{
+function! g:nvpm.data.tabs(match,index)    "{
 
   " Capture tab meta-data                 {
 
@@ -223,9 +223,9 @@ function! g:vpm.data.tabs(match,index)    "{
   for j in range(i+1,len(self.file)-1)
     " Line matching {
     let line = self.file[j]
-    let atabmatch  = matchlist(line,g:vpm.patt.tabs)
-    let abuffmatch = matchlist(line,g:vpm.patt.buff)
-    let atermmatch = matchlist(line,g:vpm.patt.term)
+    let atabmatch  = matchlist(line,g:nvpm.patt.tabs)
+    let abuffmatch = matchlist(line,g:nvpm.patt.buff)
+    let atermmatch = matchlist(line,g:nvpm.patt.term)
     "}
 
     if Found(atabmatch)
@@ -249,7 +249,7 @@ function! g:vpm.data.tabs(match,index)    "{
 
 endfunction
 "}
-function! g:vpm.data.buff(match,index)    "{
+function! g:nvpm.data.buff(match,index)    "{
 
   " Capture buff meta-data {
 
@@ -266,7 +266,7 @@ function! g:vpm.data.buff(match,index)    "{
 
 endfunction
 "}
-function! g:vpm.data.term(match,index)    "{
+function! g:nvpm.data.term(match,index)    "{
 
   " Capture term meta-data {
 
@@ -285,13 +285,13 @@ endfunction
 "}
 
 " load }
-" g:vpm.data.make {
+" g:nvpm.data.make {
 
-function! g:vpm.data.make.proj()          "{
+function! g:nvpm.data.make.proj()          "{
 
-  let proj = g:vpm.data.proj
+  let proj = g:nvpm.data.proj
   let wlen = len(proj)
-  let g:vpm.data.last %= wlen
+  let g:nvpm.data.last %= wlen
 
   for w in range(wlen) "{
     let tabs = proj[w].tabs
@@ -324,11 +324,11 @@ function! g:vpm.data.make.proj()          "{
 
 endfunction
 "}
-function! g:vpm.data.make.buff(b)         "{
+function! g:nvpm.data.make.buff(b)         "{
   exec 'badd ' . a:b.path
 endfunction
 "}
-function! g:vpm.data.make.term(t)         "{
+function! g:nvpm.data.make.term(t)         "{
 
   let cmd = a:t.cmd
 
@@ -344,26 +344,26 @@ endfunction
 "}
 
 " make }
-" g:vpm.data.curr {
+" g:nvpm.data.curr {
 
-function! g:vpm.data.curr.init()          "{
+function! g:nvpm.data.curr.init()          "{
   let self.w = 0
   let self.t = 0
   let self.b = 0
 endfunction
 "}
-function! g:vpm.data.curr.edit()          "{
+function! g:nvpm.data.curr.edit()          "{
   exec ':edit ' . self.item('b').path
 endfunction
 "}
-function! g:vpm.data.curr.leng(t)         "{
+function! g:nvpm.data.curr.leng(t)         "{
   return len(self.list(a:t))
 endfunction
 "}
-function! g:vpm.data.curr.list(t)         "{
+function! g:nvpm.data.curr.list(t)         "{
 
   if     a:t == 'w'
-    return g:vpm.data.proj
+    return g:nvpm.data.proj
   elseif a:t == 't'
     return self.list('w')[self.w].tabs
   elseif a:t == 'b'
@@ -372,7 +372,7 @@ function! g:vpm.data.curr.list(t)         "{
 
 endfunction
 "}
-function! g:vpm.data.curr.item(t)         "{
+function! g:nvpm.data.curr.item(t)         "{
 
   if     a:t == 'w'
     return self.list('w')[self.w]
@@ -384,9 +384,9 @@ function! g:vpm.data.curr.item(t)         "{
 
 endfunction
 "}
-function! g:vpm.data.curr.loop(s,t)       "{
+function! g:nvpm.data.curr.loop(s,t)       "{
 
-  if g:vpm.data.loaded "{
+  if g:nvpm.data.loaded "{
 
     if bufname('%') != self.item('b').path "{
       call self.edit()
@@ -397,17 +397,17 @@ function! g:vpm.data.curr.loop(s,t)       "{
       let self[type]  = self[type] % self.leng(type)
 
       if     type == 'b' "{
-        let g:vpm.data.proj[self.w].tabs[self.t].last = self.b
+        let g:nvpm.data.proj[self.w].tabs[self.t].last = self.b
       "}
       elseif type == 't' "{
         " Update new current tab position after cycling
-        let g:vpm.data.proj[self.w].last = self.t
+        let g:nvpm.data.proj[self.w].last = self.t
         " For the new tab, retrieve last buffer position
         let self.b = self.item('t').last
       "}
       elseif type == 'w' "{
         " Update new current Workspace position after cycling
-        let g:vpm.data.last = self.w
+        let g:nvpm.data.last = self.w
         " Update tab and buf with last positions
         let self.t = self.item('w').last
         let self.b = self.item('t').last
@@ -422,16 +422,16 @@ function! g:vpm.data.curr.loop(s,t)       "{
 
 endfunction
 "}
-function! g:vpm.data.curr.last()          "{
+function! g:nvpm.data.curr.last()          "{
 
   let self.t = self.item('w').last
   let self.b = self.item('t').last
 
 endfunction
 "}
-function! g:vpm.data.curr.term()          "{
+function! g:nvpm.data.curr.term()          "{
 
-  if bufname('%') != g:vpm.term.buf
+  if bufname('%') != g:nvpm.term.buf
     exec ':buffer ' . self.item('b').path
   endif
 
@@ -441,9 +441,9 @@ endfunction
 " curr}
 
 " data}
-" g:vpm.line {
+" g:nvpm.line {
 
-function! g:vpm.line.init() "{
+function! g:nvpm.line.init() "{
   let self.visible = 0
   let enclosure   = {}
   let enclosure.s = {}
@@ -454,80 +454,80 @@ function! g:vpm.line.init() "{
   let enclosure.u.t = {'l':' ','r':' '}
   let enclosure.s.b = enclosure.s.t
   let enclosure.u.b = enclosure.u.t
-  let g:vpm.line.enclosure = get(g: , 'vpm_line_enclosure' , enclosure)
+  let g:nvpm.line.enclosure = get(g: , 'nvpm_line_enclosure' , enclosure)
 endfunction "}
-function! g:vpm.line.tabs() "{
+function! g:nvpm.line.tabs() "{
   let line  = ''
-  let line .= '%#VPMW#'
+  let line .= '%#NVPMW#'
   let line .= self.enclosure.s.w.l
-  let line .= g:vpm.data.curr.item('w').name
+  let line .= g:nvpm.data.curr.item('w').name
   let line .= self.enclosure.s.w.r
 
-  let currtab = g:vpm.data.curr.item('t')
+  let currtab = g:nvpm.data.curr.item('t')
 
-  for tab in g:vpm.data.curr.list('t')
+  for tab in g:nvpm.data.curr.list('t')
     if tab.name == currtab.name
-      let line .= '%#VPMTabSel#'
+      let line .= '%#NVPMTabSel#'
       let line .= self.enclosure.s.t.l
       let line .= tab.name
       let line .= self.enclosure.s.t.r
     else
-      let line .= '%#VPMTab#'
+      let line .= '%#NVPMTab#'
       let line .= self.enclosure.u.t.l
       let line .= tab.name
       let line .= self.enclosure.u.t.r
     endif
   endfor
 
-  let line .= '%#VPMTabFill#'
+  let line .= '%#NVPMTabFill#'
 
   return line
 endfunction
 " }
-function! g:vpm.line.buff() "{
+function! g:nvpm.line.buff() "{
   let line  = ''
 
-  let currbuf = g:vpm.data.curr.item('b')
+  let currbuf = g:nvpm.data.curr.item('b')
 
-  for buf in g:vpm.data.curr.list('b')
+  for buf in g:nvpm.data.curr.list('b')
     if buf.name == currbuf.name
-      let line .= '%#VPMBufSel#'
+      let line .= '%#NVPMBufSel#'
       let line .= self.enclosure.s.b.l
       let line .= buf.name
       let line .= self.enclosure.s.b.r
     else
-      let line .= '%#VPMBuf#'
+      let line .= '%#NVPMBuf#'
       let line .= self.enclosure.u.b.l
       let line .= buf.name
       let line .= self.enclosure.u.b.r
     endif
   endfor
 
-  let line .= '%#VPMbufFill#'
+  let line .= '%#NVPMbufFill#'
 
   return line
 endfunction
 " }
-function! g:vpm.line.show() "{
+function! g:nvpm.line.show() "{
 
   " NOTE: Don't put spaces!
-  set tabline=%!g:vpm.line.tabs()
-  set statusline=%!g:vpm.line.buff()
+  set tabline=%!g:nvpm.line.tabs()
+  set statusline=%!g:nvpm.line.buff()
 
   let self.visible = 1
 
 endfunction
 " }
-function! g:vpm.line.hide() "{
+function! g:nvpm.line.hide() "{
 
-  set tabline=%!g:vpm.null()
-  set statusline=%!g:vpm.null()
+  set tabline=%!g:nvpm.null()
+  set statusline=%!g:nvpm.null()
 
   let self.visible = 0
 
 endfunction
 " }
-function! g:vpm.line.swap() "{
+function! g:nvpm.line.swap() "{
 
   if self.visible
     call self.hide()
@@ -540,45 +540,45 @@ endfunction
 
 
 " edit }
-" g:vpm.edit {
+" g:nvpm.edit {
 
-function! g:vpm.edit.init()               "{
+function! g:nvpm.edit.init()               "{
 
-  let self.path = g:vpm.dirs.path('temp').'proj'
+  let self.path = g:nvpm.dirs.path('temp').'proj'
   let self.mode = 0
   let self.currpath = ''
   let self.currname = ''
 
 endfunction "}
-function! g:vpm.edit.proj()               "{
+function! g:nvpm.edit.proj()               "{
 
-  if !g:vpm.data.loaded
-    echo 'Load project first [:VPMLoadProject]'
+  if !g:nvpm.data.loaded
+    echo 'Load project first [:NVPMLoadProject]'
     return -1
   endif
 
   if self.mode 
-    call g:vpm.data.load(self.currname)
+    call g:nvpm.data.load(self.currname)
     call self.init()
     return
   endif
   " Save loaded project name  {
   
-  let currpath = g:vpm.data.path
-  let self.currpath = g:vpm.data.path
-  let self.currname = matchlist(self.currpath,g:vpm.patt.edit)
+  let currpath = g:nvpm.data.path
+  let self.currpath = g:nvpm.data.path
+  let self.currname = matchlist(self.currpath,g:nvpm.patt.edit)
   let self.currname = [currpath,self.currname[1]][Found(self.currname)]
 
   " }
   " Create temporary project  {
 
-  let projects = g:vpm.dirs.list('proj')
+  let projects = g:nvpm.dirs.list('proj')
   if DoesNotFind(projects)
     echo 'No project files were found.'
     return -1
   endif
 
-  let currproj = matchstr(currpath,g:vpm.patt.edit)
+  let currproj = matchstr(currpath,g:nvpm.patt.edit)
 
   let lines = []
   
@@ -587,7 +587,7 @@ function! g:vpm.edit.proj()               "{
     if project == currproj
       continue
     endif
-    let name  = matchlist(project,g:vpm.patt.edit)
+    let name  = matchlist(project,g:nvpm.patt.edit)
     let name  = [project,name[1]][Found(name)]
     let buff  = 'buff '.name.':'.project
     let lines = add(lines,buff)
@@ -597,35 +597,35 @@ function! g:vpm.edit.proj()               "{
   
   " Give priority to current loaded project
   if Found(currpath)
-    let name  = matchlist(currpath,g:vpm.patt.edit)
+    let name  = matchlist(currpath,g:nvpm.patt.edit)
     let name  = [currpath,name[1]][Found(name)]
     let lines = ['buff * '.name.':'.currpath] + lines
   endif
 
   " Pre-append tab and workspace lines
   let lines = ['tab       Project Files'    ] + lines
-  let lines = ['workspace VPM Edit Projects'] + lines
+  let lines = ['workspace NVPM Edit Projects'] + lines
 
   call writefile(lines,self.path)
 
   " }
   " Load  temporary  project  {
   
-  call g:vpm.data.load(self.path)
+  call g:nvpm.data.load(self.path)
 
   " }
 
 endfunction "}
 
 " edit }
-" g:vpm.temp {
+" g:nvpm.temp {
 
-function! g:vpm.temp.init()               "{
+function! g:nvpm.temp.init()               "{
 
-  let patt       = g:vpm.patt.temp
+  let patt       = g:nvpm.patt.temp
   let self.path  = matchstr(v:servername,patt)
   let self.path  = resolve(self.path)
-  let self.path .= '/vpm/'
+  let self.path .= '/nvpm/'
 
   if !isdirectory(self.path)
     call mkdir(self.path,"p")
@@ -636,18 +636,18 @@ function! g:vpm.temp.init()               "{
 endfunction "}
 
 " temp }
-" g:vpm.save {
+" g:nvpm.save {
 
-function! g:vpm.save.deft(p)              "{
+function! g:nvpm.save.deft(p)              "{
 
   let proj = ''
-  let dest = g:vpm.dirs.path('root') . 'default'
+  let dest = g:nvpm.dirs.path('root') . 'default'
 
   " Argument takes priority
   if Found(a:p)
     let proj = a:p
   else
-    let path = g:vpm.data.path
+    let path = g:nvpm.data.path
     if filewritable(path)
       " Split: get the filename. Look for better solution
       let proj = split(path,'/')[-1]
@@ -655,31 +655,31 @@ function! g:vpm.save.deft(p)              "{
   endif
 
   if writefile([proj],dest) == 0
-    echo "VPM: Saved default projet [".proj."] at location. ".dest
+    echo "NVPM: Saved default projet [".proj."] at location. ".dest
   else
-    echo "VPM: Failed to save default projet [".proj."] at location. ".dest"
+    echo "NVPM: Failed to save default projet [".proj."] at location. ".dest"
     echo "Location is missing or doesn't have write permition"
   endif
 
 endfunction "}
 
 " save }
-" g:vpm.dirs {
+" g:nvpm.dirs {
 
-function! g:vpm.dirs.init()  "{
+function! g:nvpm.dirs.init()  "{
 endfunction "}
-function! g:vpm.dirs.path(t) "{
+function! g:nvpm.dirs.path(t) "{
   if     a:t == 'proj'
-    return self.vpm . '/' . self.proj . '/'
+    return self.nvpm . '/' . self.proj . '/'
   elseif a:t == 'root'
-    return resolve(self.vpm) . '/'
+    return resolve(self.nvpm) . '/'
   elseif a:t == 'temp'
-    return resolve(g:vpm.temp.path) . '/'
+    return resolve(g:nvpm.temp.path) . '/'
   endif
   return ''
 endfunction
 "}
-function! g:vpm.dirs.list(t) "{
+function! g:nvpm.dirs.list(t) "{
 
   if a:t == 'proj'
     let projpath = self.path('proj')
@@ -694,7 +694,7 @@ function! g:vpm.dirs.list(t) "{
 
     if Found(projects)
       for path in projects
-        let name = matchlist(path,g:vpm.patt.tail)
+        let name = matchlist(path,g:nvpm.patt.tail)
         if Found(name)
           call add(projnames,name[1])
         endif
@@ -709,13 +709,13 @@ endfunction
 "}
 
 " init }
-" g:vpm.term {
+" g:nvpm.term {
 
-function! g:vpm.term.init() "{
+function! g:nvpm.term.init() "{
   let self.buf  = ''
 endfunction
 " }
-function! g:vpm.term.make() "{
+function! g:nvpm.term.make() "{
 
  if !bufexists(self.buf)
 
@@ -726,7 +726,7 @@ function! g:vpm.term.make() "{
 
 endfunction
 " }
-function! g:vpm.term.kill() "{
+function! g:nvpm.term.kill() "{
 
  if bufexists(self.buf)
 
@@ -738,7 +738,7 @@ function! g:vpm.term.kill() "{
 
 endfunction
 " }
-function! g:vpm.term.edit() "{
+function! g:nvpm.term.edit() "{
 
   call self.make()
   exec 'edit! ' . self.buf
@@ -747,9 +747,9 @@ endfunction
 " }
 
 " }
-" g:vpm.patt {
+" g:nvpm.patt {
 
-function! g:vpm.patt.init()               "{
+function! g:nvpm.patt.init()               "{
 
   let s = '\s*'
   let a = '\(.*\)'
@@ -765,13 +765,13 @@ function! g:vpm.patt.init()               "{
   let self.wksp = '^'.shs.'workspace' . sa   .'$'
   let self.temp = '^'.a.f.'nvim'.w
   let self.tail = '^\/*.*\/\(.*\)$'
-  let self.edit = '^'.g:vpm.dirs.path('proj')
+  let self.edit = '^'.g:nvpm.dirs.path('proj')
   let self.edit = substitute(self.edit,'\/','\\/','g')
   let self.edit .= a.'$'
 
 endfunction
 "}
-function! g:vpm.patt.show()               "{
+function! g:nvpm.patt.show()               "{
 
   echo 'term -' string(self.term)
   echo 'buff -' string(self.buff)
@@ -787,14 +787,14 @@ endfunction
 " func}
 " Helpers    {
 
-function! VPMNextPrev(a,l,p)
+function! NVPMNextPrev(a,l,p)
 
  return "workspace\nbuffer\ntab"
 
 endfunction
-function! VPMListProjects(a,l,p)
+function! NVPMListProjects(a,l,p)
 
- return join(g:vpm.dirs.list('projname'),"\n")
+ return join(g:nvpm.dirs.list('projname'),"\n")
 
 endfunction
 function! Found(x)
@@ -807,34 +807,29 @@ endfunction
 "}
 " Commands   {
 
-command! -nargs=0 VPMEditProjects call g:vpm.edit.proj()
+command! -nargs=0 NVPMEditProjects call g:nvpm.edit.proj()
 
 command!
-\ -complete=custom,VPMListProjects
+\ -complete=custom,NVPMListProjects
 \ -nargs=1
-\ VPMLoadProject
-\ call g:vpm.data.load("<args>")
+\ NVPMLoadProject
+\ call g:nvpm.data.load("<args>")
 
 command!
-\ -complete=custom,VPMListProjects
+\ -complete=custom,NVPMListProjects
 \ -nargs=*
-\ VPMSaveDefaultProject
-\ call g:vpm.save.deft("<args>")
+\ NVPMSaveDefaultProject
+\ call g:nvpm.save.deft("<args>")
 
-command! -complete=custom,VPMNextPrev -nargs=1 VPMNext call g:vpm.loop(+1,"<args>")
-command! -complete=custom,VPMNextPrev -nargs=1 VPMPrev call g:vpm.loop(-1,"<args>")
+command! -complete=custom,NVPMNextPrev -nargs=1 NVPMNext call g:nvpm.loop(+1,"<args>")
+command! -complete=custom,NVPMNextPrev -nargs=1 NVPMPrev call g:nvpm.loop(-1,"<args>")
 
-command! -nargs=0 VPMTerminal    call g:vpm.term.edit()
-command! -nargs=0 VPMDevTest call g:vpm.test()
-
-" }
-" Autocmds   {
-
-" autocmd VimEnter * call g:vpm.default()
+command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
+command! -nargs=0 NVPMDevTest  call g:nvpm.test()
 
 " }
 
-call g:vpm.init()
-if get(g: ,'vpm_load_default',1)
-  call g:vpm.deft()
+call g:nvpm.init()
+if get(g: ,'nvpm_load_default',1)
+  call g:nvpm.deft()
 endif

@@ -1,9 +1,9 @@
 workspace VPM Plugin
 
   tab Main
-    buff Plugin   : plugin/vpm.vim
+    buff Plugin   : plugin/nvpm.vim
     buff init.vim : ~/.config/nvim/init.vim
-    term terminal : 
+*   term terminal : 
 
   tab Meta
     buff Tasks   : task.txt
