@@ -16,7 +16,3 @@ workspace Test
       buff T4-file1:tab4/file1.tab4   
       buff T4-file2:tab4/file2.tab4   
       buff T4-file3:tab4/file3.tab4   
-  tab tab5             
-      buff T5-file1:tab5/file1.tab5   
-      buff T5-file2:tab5/file2.tab5   
-      buff T5-file3:tab5/file3.tab5   
