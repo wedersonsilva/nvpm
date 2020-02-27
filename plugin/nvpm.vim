@@ -61,12 +61,10 @@ function! g:nvpm.deft()                    "{
     let project = readfile(file)[0]
     if Found(project)
       call self.data.load(project)
-      if g:nvpm.data.loaded
-        echo "NVPM: Loaded default project: " . project
-        echo "Press any key to start!"
-      endif
     endif
   endif
+
+  return 1
 
 endfunction
 "}
@@ -458,7 +456,7 @@ function! g:nvpm.line.init() "{
 endfunction "}
 function! g:nvpm.line.tabs() "{
   let line  = ''
-  let line .= '%#NVPMW#'
+  " let line .= '%#NVPMW#'
   let line .= self.enclosure.s.w.l
   let line .= g:nvpm.data.curr.item('w').name
   let line .= self.enclosure.s.w.r
@@ -467,19 +465,19 @@ function! g:nvpm.line.tabs() "{
 
   for tab in g:nvpm.data.curr.list('t')
     if tab.name == currtab.name
-      let line .= '%#NVPMTabSel#'
+      " let line .= '%#NVPMTabSel#'
       let line .= self.enclosure.s.t.l
       let line .= tab.name
       let line .= self.enclosure.s.t.r
     else
-      let line .= '%#NVPMTab#'
+      " let line .= '%#NVPMTab#'
       let line .= self.enclosure.u.t.l
       let line .= tab.name
       let line .= self.enclosure.u.t.r
     endif
   endfor
 
-  let line .= '%#NVPMTabFill#'
+  " let line .= '%#NVPMTabFill#'
 
   return line
 endfunction
@@ -491,19 +489,19 @@ function! g:nvpm.line.buff() "{
 
   for buf in g:nvpm.data.curr.list('b')
     if buf.name == currbuf.name
-      let line .= '%#NVPMBufSel#'
+      " let line .= '%#NVPMBufSel#'
       let line .= self.enclosure.s.b.l
       let line .= buf.name
       let line .= self.enclosure.s.b.r
     else
-      let line .= '%#NVPMBuf#'
+      " let line .= '%#NVPMBuf#'
       let line .= self.enclosure.u.b.l
       let line .= buf.name
       let line .= self.enclosure.u.b.r
     endif
   endfor
 
-  let line .= '%#NVPMbufFill#'
+  " let line .= '%#NVPMbufFill#'
 
   return line
 endfunction
@@ -823,6 +821,9 @@ command!
 
 command! -complete=custom,NVPMNextPrev -nargs=1 NVPMNext call g:nvpm.loop(+1,"<args>")
 command! -complete=custom,NVPMNextPrev -nargs=1 NVPMPrev call g:nvpm.loop(-1,"<args>")
+
+command! -nargs=0 NVPMLineShow call g:nvpm.line.show()
+command! -nargs=0 NVPMLineHide call g:nvpm.line.hide()
 
 command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
 command! -nargs=0 NVPMDevTest  call g:nvpm.test()

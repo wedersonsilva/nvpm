@@ -81,9 +81,7 @@ A síntaxe para escrever os arquivos de projeto é bastante simples, contando co
 
 Algumas ressalvas:
 
-1) cada instrução é dada em uma única linha
-2) cada instrução pode ter espaços antes, depois e entre palavras
-3) os nomes das coisas podem ter quaisquer caracteres
+1) cada instrução é dada em uma única linha 2) cada instrução pode ter espaços antes, depois e entre palavras 3) os nomes das coisas podem ter quaisquer caracteres
 4) se quiseres criar um terminal sem comandos, crie-o da seguinte forma: "term \<nome-do-terminal\> :". Perceba que deve conter o ":"
 5) NVPM ainda não conta com checadores de erros. Se você errar a síntaxe, provavelmente terás que fechar e reabrir o editor. Porém garanto que nenhuma operação de deleção ou sobreescrita de arquivos são aplicadas.
 
