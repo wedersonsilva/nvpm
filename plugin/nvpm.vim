@@ -1,7 +1,9 @@
-if exists('g:nvpm.loaded')
+if exists('g:nvpm_loaded')
   echo 'nvpm was already loaded. Closing...'
   finish
 endif
+
+let g:nvpm_loaded = v:true
 
 " Variables  {
 
@@ -32,7 +34,6 @@ let g:nvpm.term      = {}
 
 function! g:nvpm.init()                    "{
 
-  let g:nvpm.loaded    = 1
 
   call self.patt.init()
   call self.line.init()
