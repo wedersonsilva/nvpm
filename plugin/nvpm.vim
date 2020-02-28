@@ -1,46 +1,37 @@
 if exists('g:nvpm_loaded')
-  echo 'nvpm was already loaded. Closing...'
   finish
 endif
 
 let g:nvpm_loaded = v:true
 
-" Variables  {
+" Dictionaries {
 
 let g:nvpm = {}
-
 let g:nvpm.temp = {} 
 let g:nvpm.save = {}
 let g:nvpm.edit = {}
 let g:nvpm.patt = {}
 let g:nvpm.line = {}
-
-let g:nvpm.data      = {}
+let g:nvpm.dirs = {}
+let g:nvpm.term = {}
+let g:nvpm.data = {}
 let g:nvpm.data.make = {}
 let g:nvpm.data.curr = {}
 
-let g:nvpm.dirs = {}
-let g:nvpm.dirs.nvpm = get( g: , 'nvpm_local_dir'  , '.nvpm'  )
-let g:nvpm.dirs.main = get( g: , 'nvpm_main_dir' , '~/.nvpm' )
-let g:nvpm.dirs.proj = 'proj'
-
-let g:nvpm.term      = {}
-
 
 " }
-" Functions  {
+" Functions    {
 
 " g:nvpm      {
 
 function! g:nvpm.init()                    "{
 
-
+  call self.dirs.init()
   call self.patt.init()
   call self.line.init()
   call self.data.init()
   call self.temp.init()
   call self.edit.init()
-  call self.dirs.init()
   call self.term.init()
 
 endfunction
@@ -451,8 +442,8 @@ function! g:nvpm.line.init() "{
   let enclosure.u.w = {'l':' ','r':' '}
   let enclosure.s.t = {'l':'[','r':']'}
   let enclosure.u.t = {'l':' ','r':' '}
-  let enclosure.s.b = enclosure.s.t
-  let enclosure.u.b = enclosure.u.t
+  let enclosure.s.b = {'l':'[','r':']'} 
+  let enclosure.u.b = {'l':' ','r':' '} 
   let g:nvpm.line.enclosure = get(g: , 'nvpm_line_enclosure' , enclosure)
 endfunction "}
 function! g:nvpm.line.tabs() "{
@@ -666,6 +657,9 @@ endfunction "}
 " g:nvpm.dirs {
 
 function! g:nvpm.dirs.init()  "{
+  let self.nvpm = get( g: , 'nvpm_local_dir'  , '.nvpm'  )
+  let self.main = get( g: , 'nvpm_main_dir' , '~/.nvpm' )
+  let self.proj = 'proj'
 endfunction "}
 function! g:nvpm.dirs.path(t) "{
   if     a:t == 'proj'
@@ -784,7 +778,7 @@ endfunction
 " }
 
 " func}
-" Helpers    {
+" Helpers      {
 
 function! NVPMNextPrev(a,l,p)
 
@@ -804,7 +798,7 @@ function! DoesNotFind(x)
 endfunction
 
 "}
-" Commands   {
+" Commands     {
 
 command! -nargs=0 NVPMEditProjects call g:nvpm.edit.proj()
 
