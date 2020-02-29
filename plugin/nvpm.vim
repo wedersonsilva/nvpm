@@ -798,6 +798,12 @@ function! DoesNotFind(x)
 endfunction
 
 "}
+" Init         {
+call g:nvpm.init()
+if get(g: ,'nvpm_load_default',1)
+  call g:nvpm.deft()
+endif
+" init }
 " Commands     {
 
 command! -nargs=0 NVPMEditProjects call g:nvpm.edit.proj()
@@ -824,8 +830,9 @@ command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
 command! -nargs=0 NVPMDevTest  call g:nvpm.test()
 
 " }
+" AutoCommands {
 
-call g:nvpm.init()
-if get(g: ,'nvpm_load_default',1)
-  call g:nvpm.deft()
-endif
+execute 'au BufEnter *'. g:nvpm.dirs.path("proj") .'* set ft=nvpm'
+
+" init }
+
