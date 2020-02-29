@@ -1,15 +1,13 @@
-master > develop > feat-edit-project-files
 Menu {
 
   Current
-    *feat-user-view*
+    *feat-edit-project-files*
+    *feat-edit-remember*
 
   Doing
-    *feat-edit-project-files*
-    *feat-save*
 
   Todo
-    *feat-skeleton*
+    *feat-save*
     *feat-create-dirs*
     *feat-root-dir*
 
@@ -30,7 +28,19 @@ Menu {
 }
 Desc {
 
-*feat-user-view*                           {
+*feat-edit-remember*                        {
+
+`29 Feb 2020`
+
+When reloading the current project after edit mode
+is  done,  the  current  buffer position is lost. 
+
+A remember   system   must   be  implemented  into
+`g:nvpm.data.load()` function.
+
+
+}
+*feat-user-view*                            {
 
 24 Feb 2020
 
