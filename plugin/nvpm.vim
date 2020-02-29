@@ -601,6 +601,7 @@ function! g:nvpm.edit.proj()               "{
   " }
   " Load  temporary  project  {
   
+  call g:nvpm.data.curr.init()
   call g:nvpm.data.load(self.path)
 
   " }
