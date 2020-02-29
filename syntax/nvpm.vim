@@ -1,4 +1,4 @@
-syntax match nvpmwksp  '^workspace'
+syntax match nvpmwksp  '^\s*workspace\s*'
 syntax match nvpmtabs  '^\s*tab\s*'
 syntax match nvpmbuff  '^\s*buff\s*'
 syntax match nvpmterm  '^\s*term\s*'
