@@ -835,5 +835,8 @@ command! -nargs=0 NVPMDevTest  call g:nvpm.test()
 
 execute 'au BufEnter *'. g:nvpm.dirs.path("proj") .'* set ft=nvpm'
 
+" Go to Last Line
+au BufWinEnter * if line("'\"") | execute("normal `\"") | endif
+
 " init }
 
