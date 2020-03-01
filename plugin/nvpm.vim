@@ -7,7 +7,7 @@ let g:nvpm_loaded = v:true
 " Dictionaries {
 
 let g:nvpm = {}
-let g:nvpm.temp = {} 
+let g:nvpm.temp = {}
 let g:nvpm.save = {}
 let g:nvpm.edit = {}
 let g:nvpm.patt = {}
@@ -113,7 +113,7 @@ function! g:nvpm.data.load(file)           "{
   let workspaces = []
   let patt       = g:nvpm.patt.wksp
 
-  " Edit project files 
+  " Edit project files
   let g:nvpm.edit.mode = a:file == g:nvpm.edit.path
   let path = g:nvpm.edit.mode ? '' : g:nvpm.dirs.path('proj')
   let path = resolve(expand(path.a:file))
@@ -442,8 +442,8 @@ function! g:nvpm.line.init() "{
   let enclosure.u.w = {'l':' ','r':' '}
   let enclosure.s.t = {'l':'[','r':']'}
   let enclosure.u.t = {'l':' ','r':' '}
-  let enclosure.s.b = {'l':'[','r':']'} 
-  let enclosure.u.b = {'l':' ','r':' '} 
+  let enclosure.s.b = {'l':'[','r':']'}
+  let enclosure.u.b = {'l':' ','r':' '}
   let g:nvpm.line.enclosure = get(g: , 'nvpm_line_enclosure' , enclosure)
 endfunction "}
 function! g:nvpm.line.tabs() "{
@@ -547,13 +547,13 @@ function! g:nvpm.edit.proj()               "{
     return -1
   endif
 
-  if self.mode 
+  if self.mode
     call g:nvpm.data.load(self.currname)
     call self.init()
     return
   endif
   " Save loaded project name  {
-  
+
   let currpath = g:nvpm.data.path
   let self.currpath = g:nvpm.data.path
   let self.currname = matchlist(self.currpath,g:nvpm.patt.edit)
@@ -571,7 +571,7 @@ function! g:nvpm.edit.proj()               "{
   let currproj = matchstr(currpath,g:nvpm.patt.edit)
 
   let lines = []
-  
+
   " Loop over projects
   for project in projects
     if project == currproj
@@ -584,7 +584,7 @@ function! g:nvpm.edit.proj()               "{
   endfor
   let lines = add(lines,'tab Edit-Terminal')
   let lines = add(lines,'term Terminal:bash')
-  
+
   " Give priority to current loaded project
   if Found(currpath)
     let name  = matchlist(currpath,g:nvpm.patt.edit)
@@ -600,7 +600,7 @@ function! g:nvpm.edit.proj()               "{
 
   " }
   " Load  temporary  project  {
-  
+
   call g:nvpm.data.curr.init()
   call g:nvpm.data.load(self.path)
 
@@ -833,10 +833,23 @@ command! -nargs=0 NVPMDevTest  call g:nvpm.test()
 " }
 " AutoCommands {
 
+" Set project files filetype as nvpm
 execute 'au BufEnter *'. g:nvpm.dirs.path("proj") .'* set ft=nvpm'
 
-" Go to Last Line
-au BufWinEnter * if line("'\"") | execute("normal `\"") | endif
+" if get(g:,'nvpm_echo_path',0)
+"   au BufEnter *
+"         \echohl WarningMsg |
+"         \echom printf("%s",bufname("%")) |
+"         \echohl None
+" endif
 
-" init }
+if get(g:,'nvpm_last_line',0)
+  au BufEnter * if line("'\"") | execute("normal `\"") | endif
+endif
 
+if get(g:,'nvpm_buffresh',0)
+  au FocusGained,BufEnter * :silent! !
+  au FileChangedShell     * :silent! !
+endif
+
+" AutoCommands }

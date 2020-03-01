@@ -4,6 +4,7 @@ workspace VPM Plugin
     buff plugin   : plugin/nvpm.vim
     buff syntax   : syntax/nvpm.vim
     buff init.vim : ~/.config/nvim/init.vim
+    *buff init.vim_ : ~/.config/nvim/init.vim_
 
   tab Meta
     buff Tasks   : task.txt
