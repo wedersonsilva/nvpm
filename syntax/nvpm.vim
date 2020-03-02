@@ -9,7 +9,7 @@ syntax match nvpmdbuff '^\s*\*\s*buff\s*\(.*\)'
 syntax match nvpmdterm '^\s*\*\s*term\s*\(.*\)'
 
 syntax match nvpmpoint '\s*:\s*'
-syntax match nvpmpath  '\s*:\s*\(\/*\w*\s*\w*\)*\/*\w*\.*\w*\s*$'
+syntax match nvpmpath  '\s*:\s*\(\~*\/*\.*\w*\s*\w*\)*\/*\w*\.*\w*\s*$'
 
 hi default link nvpmwksp  Include
 hi default link nvpmtabs  Include
