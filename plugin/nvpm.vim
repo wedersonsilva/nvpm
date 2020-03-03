@@ -65,12 +65,23 @@ function! g:nvpm.newp(name)                "{
 
   let path = self.dirs.path('proj').a:name
 
-  let lines  = ['workspace <wname>'           ]
-  let lines += ['  tab <tname>'               ]
-  let lines += ['    buff <bname>     :'.path ]
+  let lines  = ['// This example file already works!']
+  let lines += ['// change the <*-name> and <cmd> to']
+  let lines += ["// your liking. Also, don't forget"]
+  let lines += ['// change the path of buffer.']
+  let lines += ['// ']
+  let lines += ["//   reload this proj to apply differencies!"]
+  let lines += ['// ']
+  let lines += ['// You may delete these comments.']
+  let lines += ['// ---------------------------------']
+  let lines += ['workspace <workspace-name>'  ]
+  let lines += ['  tab <tab-name>'            ]
+  let lines += ['    buff <buff-name> : '.path]
   let lines += ['   *term <term-name> : <cmd>']
 
-  echo lines
+  call writefile(lines,path)
+
+  call self.data.load(a:name)
 
 endfunction
 "}
