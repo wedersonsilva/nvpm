@@ -446,7 +446,7 @@ function! g:nvpm.line.init() "{
   let enclosure.u.b = {'l':' ','r':' '}
   let g:nvpm.line.enclosure = get(g: , 'nvpm_line_enclosure' , enclosure)
 endfunction "}
-function! g:nvpm.line.tabs() "{
+function! g:nvpm.line.topl() "{
   let line  = ''
   " let line .= '%#NVPMW#'
   let line .= self.enclosure.s.w.l
@@ -474,7 +474,7 @@ function! g:nvpm.line.tabs() "{
   return line
 endfunction
 " }
-function! g:nvpm.line.buff() "{
+function! g:nvpm.line.botl() "{
   let line  = ''
 
   let currbuf = g:nvpm.data.curr.item('b')
@@ -501,8 +501,8 @@ endfunction
 function! g:nvpm.line.show() "{
 
   " NOTE: Don't put spaces!
-  set tabline=%!g:nvpm.line.tabs()
-  set statusline=%!g:nvpm.line.buff()
+  set tabline=%!g:nvpm.line.topl()
+  set statusline=%!g:nvpm.line.botl()
 
   let self.visible = 1
 
