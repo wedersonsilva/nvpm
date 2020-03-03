@@ -65,6 +65,12 @@ function! g:nvpm.newp(name)                "{
 
   let path = self.dirs.path('proj').a:name
 
+  if FoundItem(path,self.dirs.list('proj'))
+    echo 'NVPM: project ['.path.'] already located in projects folder.'
+    echo '      Choose another name!'
+    return
+  endif
+
   let lines  = ['// This example file already works!']
   let lines += ['// change the <*-name> and <cmd> to']
   let lines += ["// your liking. Also, don't forget"]
@@ -819,6 +825,18 @@ function! NVPMListProjects(a,l,p)
 
  return join(g:nvpm.dirs.list('projname'),"\n")
 
+endfunction
+function! FoundItem(item,list)
+    let found = 0
+
+    for element in a:list
+      if element == a:item
+        let found = 1
+        break
+      endif
+    endfor
+
+    return found
 endfunction
 function! Found(x)
   return !empty(a:x)
