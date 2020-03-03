@@ -60,6 +60,20 @@ function! g:nvpm.deft()                    "{
 
 endfunction
 "}
+function! g:nvpm.newp(name)                "{
+  call self.dirs.make()
+
+  let path = self.dirs.path('proj').a:name
+
+  let lines  = ['workspace <wname>'           ]
+  let lines += ['  tab <tname>'               ]
+  let lines += ['    buff <bname>     :'.path ]
+  let lines += ['   *term <term-name> : <cmd>']
+
+  echo lines
+
+endfunction
+"}
 function! g:nvpm.loop(s,t)                 "{
 
   if !g:nvpm.data.loaded
@@ -662,6 +676,10 @@ function! g:nvpm.dirs.init()  "{
   let self.main = get( g: , 'nvpm_main_dir' , '~/.nvpm' )
   let self.proj = 'proj'
 endfunction "}
+function! g:nvpm.dirs.make()  "{
+  call mkdir(self.path('proj'),"p")
+  call mkdir(self.path('temp'),"p")
+endfunction "}
 function! g:nvpm.dirs.path(t) "{
   if     a:t == 'proj'
     return self.nvpm . '/' . self.proj . '/'
@@ -809,6 +827,11 @@ endif
 
 command! -nargs=0 NVPMEditProjects call g:nvpm.edit.proj()
 
+command!
+\ -complete=custom,NVPMListProjects
+\ -nargs=1
+\ NVPMNewProject
+\ call g:nvpm.newp("<args>")
 command!
 \ -complete=custom,NVPMListProjects
 \ -nargs=1
