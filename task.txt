@@ -1,12 +1,12 @@
 Menu {
 
   Current
-    *feat-edit-project-files*
-    *feat-edit-remember*
+    *feat-new-project*
 
   Doing
 
   Todo
+    *feat-edit-remember*
     *feat-save*
     *feat-create-dirs*
     *feat-root-dir*
@@ -23,6 +23,7 @@ Menu {
     *glob-function*
 
   Done
+    *feat-edit-project-files*
     *feat-defaut-project*
 
 }
