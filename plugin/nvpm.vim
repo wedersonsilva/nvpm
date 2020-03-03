@@ -836,15 +836,8 @@ command! -nargs=0 NVPMDevTest  call g:nvpm.test()
 " Set project files filetype as nvpm
 execute 'au BufEnter *'. g:nvpm.dirs.path("proj") .'* set ft=nvpm'
 
-" if get(g:,'nvpm_echo_path',0)
-"   au BufEnter *
-"         \echohl WarningMsg |
-"         \echom printf("%s",bufname("%")) |
-"         \echohl None
-" endif
-
-if get(g:,'nvpm_last_line',0)
-  au BufEnter * if line("'\"") | execute("normal `\"") | endif
+if get(g:,'nvpm_echo_path',0)
+  au BufEnter * echo printf("%s",bufname("%"))
 endif
 
 if get(g:,'nvpm_buffresh',0)
