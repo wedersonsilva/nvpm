@@ -6,10 +6,24 @@ workspace VPM Plugin
     buff init.vim : ~/.config/nvim/init.vim
     *buff init.vim_ : ~/.config/nvim/init.vim_
 
-  tab Meta
+  tab Colors
+    buff syntax : syntax/nvpm.vim
+    buff proj   : .nvpm/proj/plugin
+
+*  tab Meta
     buff Tasks   : task.txt
     buff README  : README.md
 *   buff LICENSE : LICENSE
+
+workspace Test
+
+* tab t1
+    buff syntax : /usr/share/nvim/runtime/doc/syntax.txt
+    buff usr_44 : /usr/share/nvim/runtime/doc/usr_44.txt
+
+* tab t2
+    buff visual  : /usr/share/nvim/runtime/doc/visual.txt
+    buff eval    : /usr/share/nvim/runtime/doc/eval.txt
 
 workspace Docs
 
@@ -18,7 +32,7 @@ workspace Docs
     buff usr_06 : /usr/share/nvim/runtime/doc/usr_06.txt
     buff usr_44 : /usr/share/nvim/runtime/doc/usr_44.txt
 
-  tab VimLang
+* tab VimLang
     buff visual  : /usr/share/nvim/runtime/doc/visual.txt
     buff eval    : /usr/share/nvim/runtime/doc/eval.txt
     buff map     : /usr/share/nvim/runtime/doc/map.txt
