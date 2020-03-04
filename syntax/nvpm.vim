@@ -3,12 +3,12 @@ syntax match nvpmtabs  '^\s*tab\s*'
 syntax match nvpmbuff  '^\s*buff\s*'
 syntax match nvpmterm  '^\s*term\s*'
 
-syntax match nvpmdwksp '^\s*\*\s*workspace\s*\(.*\)'
-syntax match nvpmdtabs '^\s*\*\s*tab\s*\(.*\)'
-syntax match nvpmdbuff '^\s*\*\s*buff\s*\(.*\)'
-syntax match nvpmdterm '^\s*\*\s*term\s*\(.*\)'
-
-syntax region nvpmdtabss start=/^\s*\*\s*tab/ end=/^\s*tab\|wor/me=s-3
+" syntax match nvpmdwksp '^\s*\*\s*workspace\s*\(.*\)'
+" syntax match nvpmdtabs '^\s*\*\s*tab\s*\(.*\)'
+syntax region nvpmdwksp start=/^\s*\*\s*workspace/ end=/^\s*workspace/me=s-9
+syntax region nvpmdtabs start=/^\s*\*\s*tab/ end=/^\s*tab\|workspace/me=s-9
+syntax match  nvpmdbuff '^\s*\*\s*buff\s*\(.*\)'
+syntax match  nvpmdterm '^\s*\*\s*term\s*\(.*\)'
 
 
 syntax match nvpmpoint '\s*:\s*'
@@ -27,6 +27,5 @@ hi default link nvpmdterm Comment
 
 hi default link nvpmpoint Operator
 hi default link nvpmpath  Operator
-hi default link nvpmdtabss Comment
 
 let b:current_syntax = "nvpm"

@@ -10,20 +10,10 @@ workspace VPM Plugin
     buff syntax : syntax/nvpm.vim
     buff proj   : .nvpm/proj/plugin
 
-*  tab Meta
+* tab Meta
     buff Tasks   : task.txt
     buff README  : README.md
 *   buff LICENSE : LICENSE
-
-workspace Test
-
-* tab t1
-    buff syntax : /usr/share/nvim/runtime/doc/syntax.txt
-    buff usr_44 : /usr/share/nvim/runtime/doc/usr_44.txt
-
-* tab t2
-    buff visual  : /usr/share/nvim/runtime/doc/visual.txt
-    buff eval    : /usr/share/nvim/runtime/doc/eval.txt
 
 workspace Docs
 
@@ -39,6 +29,15 @@ workspace Docs
     buff windows : /usr/share/nvim/runtime/doc/windows.txt
     buff options : /usr/share/nvim/runtime/doc/options.txt
 
-*  tab Main
+  tab Main
     term Ranger : ranger /usr/share/nvim/runtime/doc
 
+*workspace Test
+
+  tab t1
+    buff syntax : /usr/share/nvim/runtime/doc/syntax.txt
+    buff usr_44 : /usr/share/nvim/runtime/doc/usr_44.txt
+
+* tab t2
+    buff visual  : /usr/share/nvim/runtime/doc/visual.txt
+    buff eval    : /usr/share/nvim/runtime/doc/eval.txt
