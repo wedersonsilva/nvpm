@@ -466,6 +466,13 @@ endfunction
 
 function! g:nvpm.line.init() "{
   let self.visible = 0
+
+  let self.noenclosure = get(g: , 'nvpm_line_noenclosure' , 0)
+
+  if self.noenclosure
+    return
+  endif
+
   let enclosure   = {}
   let enclosure.s = {}
   let enclosure.u = {}
@@ -475,32 +482,51 @@ function! g:nvpm.line.init() "{
   let enclosure.u.t = {'l':' ','r':' '}
   let enclosure.s.b = {'l':'[','r':']'}
   let enclosure.u.b = {'l':' ','r':' '}
-  let g:nvpm.line.enclosure = get(g: , 'nvpm_line_enclosure' , enclosure)
+  let self.enclosure   = get(g: , 'nvpm_line_enclosure' , enclosure)
 endfunction "}
 function! g:nvpm.line.topl() "{
   let line  = ''
-  " let line .= '%#NVPMW#'
-  let line .= self.enclosure.s.w.l
-  let line .= g:nvpm.data.curr.item('w').name
-  let line .= self.enclosure.s.w.r
+  let line .= '%#NVPMLineWksp#'
+
+  if self.noenclosure
+    let line .= ' '
+    let line .= g:nvpm.data.curr.item('w').name
+    let line .= ' '
+  else
+    let line .= self.enclosure.s.w.l
+    let line .= g:nvpm.data.curr.item('w').name
+    let line .= self.enclosure.s.w.r
+  endif
 
   let currtab = g:nvpm.data.curr.item('t')
 
   for tab in g:nvpm.data.curr.list('t')
     if tab.name == currtab.name
-      " let line .= '%#NVPMTabSel#'
-      let line .= self.enclosure.s.t.l
-      let line .= tab.name
-      let line .= self.enclosure.s.t.r
+      let line .= '%#NVPMLineTabsSel#'
+      if self.noenclosure
+        let line .= ' '
+        let line .= tab.name
+        let line .= ' '
+      else
+        let line .= self.enclosure.s.t.l
+        let line .= tab.name
+        let line .= self.enclosure.s.t.r
+      endif
     else
-      " let line .= '%#NVPMTab#'
-      let line .= self.enclosure.u.t.l
-      let line .= tab.name
-      let line .= self.enclosure.u.t.r
+      let line .= '%#NVPMLineTabs#'
+      if self.noenclosure
+        let line .= ' '
+        let line .= tab.name
+        let line .= ' '
+      else
+        let line .= self.enclosure.u.t.l
+        let line .= tab.name
+        let line .= self.enclosure.u.t.r
+      endif
     endif
   endfor
 
-  " let line .= '%#NVPMTabFill#'
+  let line .= '%#NVPMLineTabsFill#'
 
   return line
 endfunction
@@ -512,19 +538,31 @@ function! g:nvpm.line.botl() "{
 
   for buf in g:nvpm.data.curr.list('b')
     if buf.name == currbuf.name
-      " let line .= '%#NVPMBufSel#'
-      let line .= self.enclosure.s.b.l
-      let line .= buf.name
-      let line .= self.enclosure.s.b.r
+      let line .= '%#NVPMLineBuffSel#'
+      if self.noenclosure
+        let line .= ' '
+        let line .= buf.name
+        let line .= ' '
+      else
+        let line .= self.enclosure.s.b.l
+        let line .= buf.name
+        let line .= self.enclosure.s.b.r
+      endif
     else
-      " let line .= '%#NVPMBuf#'
-      let line .= self.enclosure.u.b.l
-      let line .= buf.name
-      let line .= self.enclosure.u.b.r
+      let line .= '%#NVPMLineBuff#'
+      if self.noenclosure
+        let line .= ' '
+        let line .= buf.name
+        let line .= ' '
+      else
+        let line .= self.enclosure.u.b.l
+        let line .= buf.name
+        let line .= self.enclosure.u.b.r
+      endif
     endif
   endfor
 
-  " let line .= '%#NVPMbufFill#'
+  let line .= '%#NVPMLinebuffFill#'
 
   return line
 endfunction
