@@ -32,22 +32,30 @@ $tree ~/Projetos/libc
     └── module-02.h
 ```
 
-Tanto o Vim quanto o Neovim (e editores de texto em geral) organizam os arquivos sendo abertos em uma lista circular, geralmente apresentados em abas separadas cujo o nome de cada aba faz alguma referência ao arquivo em questão. Algo como:
+Tanto o Vim quanto o Neovim (e editores de texto em geral) organizam os arquivos abertos em uma lista circular, geralmente apresentados em abas separadas cujo o nome de cada aba faz alguma referência ao arquivo em questão. Algo como:
 
 ```text
 |file-01.txt|file-02.txt|file-03.txt|...|last-file.txt|
 ```
 
-o problema dessa abordagem quando estamos lidando com um projeto grande, é que fica difícil de mapear todos eles ao mesmo tempo pelos seguintes motivos:
+O problema dessa abordagem é que quando estamos lidando com um projeto grande, fica difícil mapear todos os itens na mente, geralmente pelos seguintes motivos:
 
 1) Categorias diferentes: código fonte, scripts, documentação, etc
 2) Hieraquias diferentes: pastas e sub-pastas
-3) Curta memória humana : Não conseguimos lembrar muitas  posições na lista
+3) Curta memória humana : Não conseguimos lembrar muitas posições na lista
 4) Consome a largura da tela
 
 Em outras palavras, ao organizar os arquivos desta forma, apenas 1 (um) grau de liberdade está sendo usado ao apresentá-los na tela.
 
 Portanto, a proposta do NVPM é a de aumentar o número de graus de liberdade.
+
+# Instalação 
+
+Para instalar o NVPM, assumindo que você o vim-plug, copie o código abaixo para o seu init.vim:
+
+```vim
+Plug 'nvpm/nvmp'
+```
 
 # Como usar o NVPM
 
