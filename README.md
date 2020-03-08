@@ -1,4 +1,6 @@
 # Introdução
+NVPM é a sigla para **[Neo]Vim Project Manager**.
+
 Este plugin permite o planejamento e navegação de arquivos de forma independente da forma com que o Vim/Neovim organiza os arquivos.
 
 Seu uso é feito baseando-se na manipulação da meta-informação contida em todo projeto de software, seja ele grande ou pequeno. Meta-informação é toda informação que descreve outra informação, sendo esta última o projeto em si. 
