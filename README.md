@@ -51,7 +51,7 @@ Portanto, a proposta do NVPM é a de aumentar o número de graus de liberdade.
 
 # Instalação 
 
-Para instalar o NVPM, assumindo que você usa o vim-plug (``` https://github.com/junegunn/vim-plug ```) para instalar seus plugins, copie o código abaixo para o seu init.vim:
+Para instalar o NVPM, assumindo que você usa o vim-plug (``` https://github.com/junegunn/vim-plug ```), copie o código abaixo em seu init.vim:
 
 ```vim
 Plug 'nvpm/nvmp'
