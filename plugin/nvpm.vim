@@ -61,6 +61,7 @@ function! g:nvpm.deft()                    "{
 endfunction
 "}
 function! g:nvpm.newp(name)                "{
+
   call self.dirs.make()
 
   let path = self.dirs.path('proj').a:name
@@ -71,19 +72,32 @@ function! g:nvpm.newp(name)                "{
     return
   endif
 
-  let lines  = ['// This example file already works!']
-  let lines += ['// change the <*-name> and <cmd> to']
-  let lines += ["// your liking. Also, don't forget"]
-  let lines += ['// change the path of buffer.']
+  let lines  = ['// ']
+  let lines += ['// This example file already works!']
+  let lines += ['// change the <*-name> to your liking.']
+  let lines += ["// Also, don't forget change the path of buff entry."]
+  let lines += ['// ']
+  let lines += ['// List of existing projects in: ['.g:nvpm.dirs.path('proj').']']
+  let lines += ['// ']
+  let lines += ['// --> '.a:name]
+  let lines += ['// ']
+
+  let projects = g:nvpm.dirs.list('projname')
+  for project in projects
+    let lines += ['//     '.project]
+  endfor
+
   let lines += ['// ']
   let lines += ["//   reload this proj to apply differencies!"]
   let lines += ['// ']
-  let lines += ['// You may delete these comments.']
+  let lines += ['// Note: You may delete these comments']
+  let lines += ['// by using "dip" inside this paragraph!']
   let lines += ['// ---------------------------------']
+  let lines += ['']
   let lines += ['workspace <workspace-name>'  ]
   let lines += ['  tab <tab-name>'            ]
   let lines += ['    buff <buff-name> : '.path]
-  let lines += ['   *term <term-name> : <cmd>']
+  let lines += ['    term Terminal:']
 
   call writefile(lines,path)
 
