@@ -40,14 +40,16 @@ Tanto o Vim quanto o Neovim (e editores de texto em geral) organizam os arquivos
 
 O problema dessa abordagem é que quando estamos lidando com um projeto grande, fica difícil mapear todos os itens na mente, geralmente pelos seguintes motivos:
 
-1) Categorias diferentes: código fonte, scripts, documentação, etc
-2) Hieraquias diferentes: pastas e sub-pastas
-3) Curta memória humana : Não conseguimos lembrar muitas posições na lista
-4) Consome a largura da tela
+1) **Categorias diferentes:** Código fonte, scripts, documentação, etc
+2) **Hieraquias diferentes:** Pastas e sub-pastas
+3) **Curta memória humana:** Não conseguimos lembrar muitas posições na lista
+4) **Consome a largura da tela**
 
 Em outras palavras, ao organizar os arquivos desta forma, apenas 1 (um) grau de liberdade está sendo usado ao apresentá-los na tela.
 
-Portanto, a proposta do NVPM é a de aumentar o número de graus de liberdade.
+Portanto, a proposta do **NVPM** é a de aumentar o número de graus de liberdade, permitindo que a organização dos arquivos e a navegação seja definida pelo usuário usando uma arquitetura de árvore semelhante à imagem abaixo.
+
+![NVPM-tree-example1](.img/ex_tree1.png)
 
 # Instalação 
 
