@@ -1,17 +1,3 @@
-// Plugin  {
-
-workspace NVPM Plugin
-
-  tab Main
-    buff plugin   : plugin/nvpm.vim
-    buff init.vim : ~/.config/nvim/init.vim
-    *buff tasks    : task.txt
-
-  tab Colors
-    buff syntax : syntax/nvpm.vim
-    buff proj   : .nvpm/proj/plugin
-
-// }
 // Meta    {
 
 workspace NVPM Docs
@@ -20,6 +6,7 @@ workspace NVPM Docs
     *buff readme  : README.md
     buff nvpmdoc : doc/nvpm.txt
     buff geochar : /i/biny/txt/geometry.txt
+    buff logo    : ../logo
     *buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
 
   tab plugged
@@ -32,6 +19,20 @@ workspace NVPM Docs
     buff init.vim : ~/.config/nvim/init.vim
     buff oldshool : ~/.config/nvim/colors/oldschool.vim
     buff license  : LICENSE
+
+// }
+// Plugin  {
+
+workspace NVPM Plugin
+
+  tab Main
+    buff plugin   : plugin/nvpm.vim
+    buff init.vim : ~/.config/nvim/init.vim
+    *buff tasks    : task.txt
+
+  tab Colors
+    buff syntax : syntax/nvpm.vim
+    buff proj   : .nvpm/proj/plugin
 
 // }
 // VimDocs {
