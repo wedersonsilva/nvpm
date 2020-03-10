@@ -1,3 +1,248 @@
+*nvpm.txt* - Project Manager for Neovim
 
 
-vim: ft=help tw=78 isk+=<,>,\:,-,'
+  Text art coming Soon
+
+
+==================================================
+CONTENTS                                      *nvpm*
+
+|1|  Introduction  ...... |nvpm-intro|
+|2|  Context       ...... |nvpm-context|
+|3|  NVPM Lang     ...... |nvpm-markup-language|
+|4|  Commands      ...... |nvpm-commands|
+|5|  Configuration ...... |nvpm-configuration|
+|6|  Functions     ...... |nvpm-functions|
+|7|  Autocommands  ...... |nvpm-autocommands|
+|8|  Syntax        ...... |nvpm-syntax-highlight|
+|9|  NVPM Workflow ...... |nvpm-workflow|
+|10| Installation  ...... |nvpm-installation|
+
+==================================================
+1 Introduction                      *nvpm-intro* {
+
+NVPM stands for `NeoVim Project Manager` . It's
+mission is to assist the user on managing large
+quantities of files in any project. 
+
+The main goal is to create a tree-like structure
+in order to overcome the linearity of Neovim's
+bufferlist.
+
+To do that, the creator was forced to `totally`
+ignore how Neovim handles each loaded file.
+
+The approach here is to make a plan about which
+files the user wants to open and then write what
+is called a |project-file-descriptor|. Those files
+follow the |NVPM-Markup-Language|, which was
+specific created for the only purpuse of
+describing which files the user will open every
+time nvpm is called.
+
+}
+==================================================
+2 Context                         *nvpm-context* {
+
+
+For small projects, Neovim's bufferlist will do
+just fine. You can open all the files in different
+tabs and move arround with ease. The problem only
+appears when you start to increase files and
+directories in your project.
+
+Lets then go through the process of what could
+happen if the user wants lets say write a C
+Library that handles geometric calculations. This
+project can start small, lets say:
+>
+  $tree ~/libgeo/
+
+  libgeo/
+  ├── main.c
+  └── readme.txt
+  
+  0 directories, 2 files
+<
+
+In such cases, the user can open each file at a
+time and edit them separately. But very soon the
+situation can change into separate modules for the
+library. Say:
+
+>
+  tree ~/libgeo/
+
+  libgeo/
+  ├── main.c
+  ├── readme.txt
+  └── src
+      ├── line.c
+      ├── line.h
+      ├── plane.c
+      ├── plane.h
+      ├── point.c
+      └── point.h
+
+  1 directory, 8 files
+<
+
+In such a case, not only another hierarchy was
+created, but 6 more source and header files as
+well.
+
+It can always get uglier! The user might want to
+make separate tests, assisted by a Makefile. Not
+only that, as soon as the modules increase in
+number, more hierarchies might be necessary. 
+
+And what about creating a git repository, a
+documentation folder, install, uninstall and
+helper scripts. Well, very quickly, the user 
+might face the following structure of files:
+
+>
+  tree -a libgeo/
+
+  libgeo/
+  ├── bin
+  ├── doc
+  │   ├── libgeo-dev.txt
+  │   └── libgeo.txt
+  ├── .gitignore
+  ├── lib
+  ├── Makefile
+  ├── readme.txt
+  ├── scripts
+  │   ├── helper.sh
+  │   ├── install.sh
+  │   └── uninstall.sh
+  ├── src
+  │   ├── common.h
+  │   ├── data
+  │   │   ├── list.c
+  │   │   ├── list.h
+  │   │   ├── string.c
+  │   │   ├── string.h
+  │   │   ├── tree.c
+  │   │   └── tree.h
+  │   ├── main.c
+  │   ├── math
+  │   │   ├── complex.c
+  │   │   ├── complex.h
+  │   │   ├── matrix.c
+  │   │   ├── matrix.h
+  │   │   ├── real.c
+  │   │   ├── real.h
+  │   │   ├── vector.c
+  │   │   └── vector.h
+  │   └── shapes
+  │       ├── line.c
+  │       ├── line.h
+  │       ├── plane.c
+  │       ├── plane.h
+  │       ├── point.c
+  │       └── point.h
+  └── test
+      ├── common.h
+      ├── data
+      │   ├── list.c
+      │   ├── list.h
+      │   ├── string.c
+      │   ├── string.h
+      │   ├── tree.c
+      │   └── tree.h
+      ├── main.c
+      ├── math
+      │   ├── complex.c
+      │   ├── complex.h
+      │   ├── matrix.c
+      │   ├── matrix.h
+      │   ├── real.c
+      │   ├── real.h
+      │   ├── vector.c
+      │   └── vector.h
+      └── shapes
+          ├── line.c
+          ├── line.h
+          ├── plane.c
+          ├── plane.h
+          ├── point.c
+          └── point.h
+
+  12 directories, 52 files
+
+<
+Well how about that? Not we have many more files
+and directories, divided into folders and
+subfolders. Not only that, we have now different
+categories of files being source code, scripts,
+documentation, git , and test files. If the
+user tries to open them all, I'm more than sure
+that only one instance of Neovim won't be enough 
+to see them all.
+
+And even if the user defies logic and open all of
+them, there won't be enough screen to keep them
+all being display, which may force the user to
+create splits, tabs, hidden buffers, etc, etc.
+
+}
+==================================================
+3 NVPM Lang               *nvpm-markup-language* {
+
+The markup language to describe projects is having
+the folowing keywords:
+
+>
+  workspace
+  tab
+  buff
+  term
+<
+
+
+Note 
+  see ** for new projects
+
+|workspace|: receives a workspace name.
+
+  Syntax  : `workspace <workspace-name>`
+  Examples:
+>
+  workspace Code
+  workspace Docs
+  workspace LibGeo Code
+  workspace LibGeo Scripts
+<
+
+|tab|: receives a tab name.
+
+  Syntax  : `tab <tab-name>`
+  Examples:
+>
+    tab Main
+    tab Doc
+<
+
+|buff|: receives a buffer name and path.
+
+>
+  buff main : src/main.c
+  buff make : Makefile
+<
+|term|: receives a terminal name and command.
+
+>
+  term home : bash
+  term tree : ranger
+<
+
+
+
+
+
+}
+==================================================
+
+vim: ft=help tw=50 isk+=<,>,\:,-,'

@@ -1,18 +1,20 @@
 // Meta    {
 
-workspace meta
+workspace NVPM Docs
 
   tab main
-    buff readme  : README.md
+    *buff readme  : README.md
     buff nvpmdoc : doc/nvpm.txt
     buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
 
   tab plugged
     buff Neomake : ~/.config/nvim/plugged/neomake/doc/neomake.txt
+    buff cleverf : ~/.config/nvim/plugged/clever-f.vim/doc/clever_f.txt
     term folder  : ranger ~/.config/nvim/plugged
 
-  tab settings
+  *tab settings
     buff init.vim : ~/.config/nvim/init.vim
+    buff oldshool : ~/.config/nvim/colors/oldschool.vim
     buff license  : LICENSE
 
 // }
