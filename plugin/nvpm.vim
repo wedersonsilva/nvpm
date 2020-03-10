@@ -482,6 +482,7 @@ function! g:nvpm.line.init() "{
   let self.visible = 0
 
   let self.noenclosure = get(g: , 'nvpm_line_noenclosure' , 0)
+  let self.bottomright = get(g: , 'nvpm_line_bottomright' , '')
 
   if self.noenclosure
     return
@@ -577,6 +578,10 @@ function! g:nvpm.line.botl() "{
   endfor
 
   let line .= '%#NVPMLinebuffFill#'
+
+
+  let line .= Found(self.bottomright) ? '%=' : ''
+  let line .= self.bottomright
 
   return line
 endfunction
