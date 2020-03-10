@@ -5,9 +5,11 @@ workspace NVPM Docs
   tab main
     *buff readme  : README.md
     buff nvpmdoc : doc/nvpm.txt
-    buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
+    buff geochar : /i/biny/txt/geometry.txt
+    *buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
 
   tab plugged
+    buff DraIt   : ~/.config/nvim/plugged/DrawIt/doc/DrawIt.txt
     buff Neomake : ~/.config/nvim/plugged/neomake/doc/neomake.txt
     buff cleverf : ~/.config/nvim/plugged/clever-f.vim/doc/clever_f.txt
     term folder  : ranger ~/.config/nvim/plugged
