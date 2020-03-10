@@ -14,7 +14,7 @@ syntax match  nvpmprojcomment '^\/\/.*$'
 
 syntax match nvpmprojcommentnotes /\/\/\sNote:/he=e-1
 
-syntax match nvpmprojpath  '\s*:\s*\(\~*\/*\.*\w*\s*\w*\)*\/*\w*\.*\w*\s*$'
+syntax match nvpmprojpath  '\s*:\s*\(\~*\/*\.*\-*\w*\s*\w*\)*\/*\w*\.*\w*\s*$'
 
 hi default link nvpmprojwksp  Include
 hi default link nvpmprojtabs  Include
