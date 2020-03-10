@@ -1,21 +1,38 @@
-workspace VPM Plugin
+// Meta    {
+
+workspace meta
+
+  tab main
+    buff readme  : README.md
+    buff nvpmdoc : doc/nvpm.txt
+    buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
+
+  tab plugged
+    buff Neomake : ~/.config/nvim/plugged/neomake/doc/neomake.txt
+    term folder  : ranger ~/.config/nvim/plugged
+
+  tab settings
+    buff init.vim : ~/.config/nvim/init.vim
+    buff license  : LICENSE
+
+// }
+// Plugin  {
+
+workspace NVPM Plugin
 
   tab Main
     buff plugin   : plugin/nvpm.vim
-    *buff syntax   : syntax/nvpm.vim
+    buff tasks    : task.txt
     buff init.vim : ~/.config/nvim/init.vim
-    *buff init.vim_ : ~/.config/nvim/init.vim_
 
   tab Colors
     buff syntax : syntax/nvpm.vim
     buff proj   : .nvpm/proj/plugin
 
-* tab Meta
-    buff Tasks   : task.txt
-    buff README  : README.md
-*   buff LICENSE : LICENSE
+// }
+// VimDocs {
 
-workspace Docs
+*workspace Docs
 
   tab Syntax
     buff syntax : /usr/share/nvim/runtime/doc/syntax.txt
@@ -32,12 +49,4 @@ workspace Docs
   tab Main
     term Ranger : ranger /usr/share/nvim/runtime/doc
 
-*workspace Test
-
-  tab t1
-    buff syntax : /usr/share/nvim/runtime/doc/syntax.txt
-    buff usr_44 : /usr/share/nvim/runtime/doc/usr_44.txt
-
-* tab t2
-    buff visual  : /usr/share/nvim/runtime/doc/visual.txt
-    buff eval    : /usr/share/nvim/runtime/doc/eval.txt
+//}
