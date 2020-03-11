@@ -3,11 +3,11 @@
 workspace NVPM Docs
 
   tab main
-    *buff readme  : README.md
     buff nvpmdoc : doc/nvpm.txt
-    buff geochar : /i/biny/txt/geometry.txt
-    buff logo    : ../logo
+    buff tags    : doc/tags
+    *buff readme  : README.md
     *buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
+    *buff logo    : ../logo
 
   tab plugged
     buff DraIt   : ~/.config/nvim/plugged/DrawIt/doc/DrawIt.txt
