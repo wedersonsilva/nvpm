@@ -67,32 +67,32 @@ function! g:nvpm.newp(name)                "{
   let path = self.dirs.path('proj').a:name
 
   if FoundItem(path,self.dirs.list('proj'))
-    echo 'NVPM: project ['.path.'] already located in projects folder.'
+    echo 'NVPM: project ['.path.'] already exists.'
     echo '      Choose another name!'
     return
   endif
 
-  let lines  = ['// ']
-  let lines += ['// This example file already works!']
-  let lines += ['// change the <*-name> to your liking.']
-  let lines += ["// Also, don't forget change the path of buff entry."]
-  let lines += ['// ']
-  let lines += ['// List of existing projects in: ['.g:nvpm.dirs.path('proj').']']
-  let lines += ['// ']
-  let lines += ['// --> '.a:name]
-  let lines += ['// ']
+  let lines  = ['# ']
+  let lines += ['# This in an example file']
+  let lines += ['# Change the <*-name>']
+  let lines += ["# Change the path of buff entry"]
+  let lines += ['# ']
+  let lines += ['# List of existing projects']
+  let lines += ['# ']
+  let lines += ['# --> '.a:name]
+  let lines += ['# ']
 
   let projects = g:nvpm.dirs.list('projname')
   for project in projects
-    let lines += ['//     '.project]
+    let lines += ['#     '.project]
   endfor
 
-  let lines += ['// ']
-  let lines += ["//   reload this proj to apply differencies!"]
-  let lines += ['// ']
-  let lines += ['// Note: You may delete these comments']
-  let lines += ['// by using "dip" inside this paragraph!']
-  let lines += ['// ---------------------------------']
+  let lines += ['# ']
+  let lines += ["# To apply differencies:"]
+  let lines += ["# :NVPMLoadProject ".a:name]
+  let lines += ['# ']
+  let lines += ['# You may delete these comments']
+  let lines += ['# -----------------------------']
   let lines += ['']
   let lines += ['workspace <workspace-name>'  ]
   let lines += ['  tab <tab-name>'            ]
@@ -105,15 +105,18 @@ function! g:nvpm.newp(name)                "{
 
 endfunction
 "}
-function! g:nvpm.loop(s,t)                 "{
+function! g:nvpm.loop(s,t,c)               "{
 
   if !g:nvpm.data.loaded
     echo 'Load project first [:NVPMLoadProject]'
     return -1
   endif
 
-  call self.data.curr.loop(a:s,a:t[0])
+  let step = a:s * a:c
+  call self.data.curr.loop(step,a:t[0])
   call self.data.curr.edit()
+
+  echo
 
 endfunction
 "}
@@ -179,6 +182,13 @@ function! g:nvpm.data.load(file)           "{
     for i in range(len(self.file))
 
       let line = self.file[i]
+
+      " Ignore comments {
+      if Found(matchstr(line,'^\s*\#.*'))
+        continue
+      endif
+      " }
+
       let awkspmatch = matchlist(line,patt)
 
       if Found(awkspmatch)
@@ -482,7 +492,12 @@ function! g:nvpm.line.init() "{
   let self.visible = 0
 
   let self.noenclosure = get(g: , 'nvpm_line_noenclosure' , 0)
-  let self.bottomright = get(g: , 'nvpm_line_bottomright' , '')
+
+
+  let deftbr = '%-(%l,%c%V%)/%P'
+  let defttr = '%=%y %m'
+  let self.topright    = get(g: , 'nvpm_line_topright'    , defttr)
+  let self.bottomright = get(g: , 'nvpm_line_bottomright' , deftbr)
 
   if self.noenclosure
     return
@@ -542,6 +557,9 @@ function! g:nvpm.line.topl() "{
   endfor
 
   let line .= '%#NVPMLineTabsFill#'
+
+  let line .= Found(self.topright) ? '%=' : ''
+  let line .= self.topright
 
   return line
 endfunction
@@ -930,14 +948,10 @@ command!
 \ NVPMSaveDefaultProject
 \ call g:nvpm.save.deft("<args>")
 
-command! -complete=custom,NVPMNextPrev -nargs=1 NVPMNext call g:nvpm.loop(+1,"<args>")
-command! -complete=custom,NVPMNextPrev -nargs=1 NVPMPrev call g:nvpm.loop(-1,"<args>")
-
-command! -nargs=0 NVPMLineShow call g:nvpm.line.show()
-command! -nargs=0 NVPMLineHide call g:nvpm.line.hide()
+command! -count=1 -complete=custom,NVPMNextPrev -nargs=1 NVPMNext call g:nvpm.loop(+1,"<args>","<count>")
+command! -count=1 -complete=custom,NVPMNextPrev -nargs=1 NVPMPrev call g:nvpm.loop(-1,"<args>","<count>")
 
 command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
-command! -nargs=0 NVPMDevTest  call g:nvpm.test()
 
 " }
 " AutoCommands {
