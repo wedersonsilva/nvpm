@@ -36,10 +36,6 @@ function! g:nvpm.init()                    "{
 
 endfunction
 "}
-function! g:nvpm.null()                    "{
-  return ''
-endfunction
-"}
 function! g:nvpm.test()                    "{
 endfunction
 "}
@@ -72,27 +68,25 @@ function! g:nvpm.newp(name)                "{
     return
   endif
 
-  let lines  = ['# ']
-  let lines += ['# This in an example file']
-  let lines += ['# Change the <*-name>']
-  let lines += ["# Change the path of buff entry"]
-  let lines += ['# ']
-  let lines += ['# List of existing projects']
+  let lines  = ['']
+  let lines += ['# NVPM New Project File. It works!']
+  let lines += ['# --------------------------------']
   let lines += ['# ']
   let lines += ['# --> '.a:name]
-  let lines += ['# ']
 
   let projects = g:nvpm.dirs.list('projname')
   for project in projects
     let lines += ['#     '.project]
   endfor
 
-  let lines += ['# ']
-  let lines += ["# To apply differencies:"]
-  let lines += ["# :NVPMLoadProject ".a:name]
-  let lines += ['# ']
-  let lines += ['# You may delete these comments']
-  let lines += ['# -----------------------------']
+  " let lines += ['# ']
+  " let lines += ["# To apply differencies:"]
+  " let lines += ['# ']
+  " let lines += ["#   :NVPMLoadProject ".a:name]
+  " let lines += ['# ']
+  " let lines += ['# You may delete these comments']
+  " let lines += ['# -----------------------------']
+
   let lines += ['']
   let lines += ['workspace <workspace-name>'  ]
   let lines += ['  tab <tab-name>'            ]
@@ -101,7 +95,12 @@ function! g:nvpm.newp(name)                "{
 
   call writefile(lines,path)
 
-  call self.data.load(a:name)
+  if get(g:,'nvpm_new_project_edit_mode',0)
+    call self.data.load(a:name)
+    call self.edit.proj()
+  elseif get(g:,'nvpm_load_new_project',1)
+    call self.data.load(a:name)
+  endif
 
 endfunction
 "}
@@ -487,119 +486,64 @@ endfunction
 " g:nvpm.line {
 
 function! g:nvpm.line.init() "{
-  let self.visible = 0
 
-  let self.noenclosure = get(g: , 'nvpm_line_noenclosure' , 0)
+  let self.visible     = 0
+  let self.topright    = get(g: , 'nvpm_line_topright'    , '%y %m'          )
+  let self.bottomright = get(g: , 'nvpm_line_bottomright' , '%-(%l,%c%V%)/%P')
+  let self.enclosure   = get(g: , 'nvpm_line_enclosure'   , 1                )
+  let self.innerspace  = get(g: , 'nvpm_line_innerspace'  , 0                )
 
-
-  let deftbr = '%-(%l,%c%V%)/%P'
-  let defttr = '%=%y %m'
-  let self.topright    = get(g: , 'nvpm_line_topright'    , defttr)
-  let self.bottomright = get(g: , 'nvpm_line_bottomright' , deftbr)
-
-  if self.noenclosure
-    return
-  endif
-
-  let enclosure   = {}
-  let enclosure.s = {}
-  let enclosure.u = {}
-  let enclosure.s.w = {'l':'(','r':')'}
-  let enclosure.u.w = {'l':' ','r':' '}
-  let enclosure.s.t = {'l':'[','r':']'}
-  let enclosure.u.t = {'l':' ','r':' '}
-  let enclosure.s.b = {'l':'[','r':']'}
-  let enclosure.u.b = {'l':' ','r':' '}
-  let self.enclosure   = get(g: , 'nvpm_line_enclosure' , enclosure)
 endfunction "}
 function! g:nvpm.line.topl() "{
+
+  let space = self.innerspace ? ' ' : ''
   let line  = ''
   let line .= '%#NVPMLineWksp#'
-
-  if self.noenclosure
-    let line .= ' '
-    let line .= g:nvpm.data.curr.item('w').name
-    let line .= ' '
-  else
-    let line .= self.enclosure.s.w.l
-    let line .= g:nvpm.data.curr.item('w').name
-    let line .= self.enclosure.s.w.r
-  endif
+  let line .= self.enclosure ? ' ' : '('.space
+  let line .= g:nvpm.data.curr.item('w').name
+  let line .= self.enclosure ? ' ' : space.')'
+  let line .= ' '
 
   let currtab = g:nvpm.data.curr.item('t')
 
   for tab in g:nvpm.data.curr.list('t')
-    if tab.name == currtab.name
-      let line .= '%#NVPMLineTabsSel#'
-      if self.noenclosure
-        let line .= ' '
-        let line .= tab.name
-        let line .= ' '
-      else
-        let line .= self.enclosure.s.t.l
-        let line .= tab.name
-        let line .= self.enclosure.s.t.r
-      endif
-    else
-      let line .= '%#NVPMLineTabs#'
-      if self.noenclosure
-        let line .= ' '
-        let line .= tab.name
-        let line .= ' '
-      else
-        let line .= self.enclosure.u.t.l
-        let line .= tab.name
-        let line .= self.enclosure.u.t.r
-      endif
-    endif
+    let iscurr = tab.name == currtab.name
+    let line  .= '%#NVPMLineTabs'
+    let line  .= iscurr ? 'Sel#' : '#'
+    let line  .= self.enclosure || !iscurr ? ' '.space : '['.space
+    let line  .= tab.name
+    let line  .= self.enclosure || !iscurr ? ' '.space : space.']'
   endfor
 
   let line .= '%#NVPMLineTabsFill#'
-
-  let line .= Found(self.topright) ? '%=' : ''
+  let line .= '%='
   let line .= self.topright
 
   return line
+
 endfunction
 " }
 function! g:nvpm.line.botl() "{
+  let space = self.innerspace ? ' ' : ''
   let line  = ''
 
   let currbuf = g:nvpm.data.curr.item('b')
 
   for buf in g:nvpm.data.curr.list('b')
-    if buf.name == currbuf.name
-      let line .= '%#NVPMLineBuffSel#'
-      if self.noenclosure
-        let line .= ' '
-        let line .= buf.name
-        let line .= ' '
-      else
-        let line .= self.enclosure.s.b.l
-        let line .= buf.name
-        let line .= self.enclosure.s.b.r
-      endif
-    else
-      let line .= '%#NVPMLineBuff#'
-      if self.noenclosure
-        let line .= ' '
-        let line .= buf.name
-        let line .= ' '
-      else
-        let line .= self.enclosure.u.b.l
-        let line .= buf.name
-        let line .= self.enclosure.u.b.r
-      endif
-    endif
+    let iscurr = buf.name == currbuf.name
+    let line  .= '%#NVPMLineBuff'
+    let line  .= iscurr ? 'Sel#' : '#'
+    let line  .= self.enclosure || !iscurr ? ' '.space : '['.space
+    let line  .= buf.name
+    let line  .= self.enclosure || !iscurr ? ' '.space : space.']'
   endfor
 
   let line .= '%#NVPMLinebuffFill#'
-
-
-  let line .= Found(self.bottomright) ? '%=' : ''
+  let line .= '%='
   let line .= self.bottomright
 
   return line
+
 endfunction
 " }
 function! g:nvpm.line.show() "{
@@ -614,8 +558,8 @@ endfunction
 " }
 function! g:nvpm.line.hide() "{
 
-  set tabline=%!g:nvpm.null()
-  set statusline=%!g:nvpm.null()
+  set tabline=%#Normal#
+  set statusline=%#Normal#
 
   let self.visible = 0
 
@@ -927,6 +871,9 @@ endif
 " init }
 " Commands     {
 
+" For Help Feature
+" command! -nargs=1 -complete=help H :enew | :set buftype=help | :h <args>
+
 command! -nargs=0 NVPMEditProjects call g:nvpm.edit.proj()
 
 command!
@@ -957,13 +904,5 @@ command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
 " Set project files filetype as nvpm
 execute 'au BufEnter *'. g:nvpm.dirs.path("proj") .'* set ft=nvpm'
 
-if get(g:,'nvpm_echo_path',0)
-  au BufEnter * echo printf("%s",bufname("%"))
-endif
-
-if get(g:,'nvpm_buffresh',0)
-  au FocusGained,BufEnter * :silent! !
-  au FileChangedShell     * :silent! !
-endif
 
 " AutoCommands }
