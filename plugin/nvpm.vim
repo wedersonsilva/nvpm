@@ -105,18 +105,15 @@ function! g:nvpm.newp(name)                "{
 
 endfunction
 "}
-function! g:nvpm.loop(s,t,c)               "{
+function! g:nvpm.loop(s,t)                 "{
 
   if !g:nvpm.data.loaded
     echo 'Load project first [:NVPMLoadProject]'
     return -1
   endif
-
-  let step = a:s * a:c
+  let step = v:count1 * a:s
   call self.data.curr.loop(step,a:t[0])
   call self.data.curr.edit()
-
-  echo
 
 endfunction
 "}
@@ -436,8 +433,8 @@ function! g:nvpm.data.curr.loop(s,t)       "{
     if bufname('%') != self.item('b').path "{
       call self.edit()
     else
-      let step = a:s
-      let type = a:t
+      let type  = a:t
+      let step  = a:s
       let self[type] += step
       let self[type]  = self[type] % self.leng(type)
 
@@ -463,6 +460,7 @@ function! g:nvpm.data.curr.loop(s,t)       "{
   " }
   else
     echo 'Load layout first!'
+    return
   endif
 
 endfunction
@@ -948,8 +946,8 @@ command!
 \ NVPMSaveDefaultProject
 \ call g:nvpm.save.deft("<args>")
 
-command! -count=1 -complete=custom,NVPMNextPrev -nargs=1 NVPMNext call g:nvpm.loop(+1,"<args>","<count>")
-command! -count=1 -complete=custom,NVPMNextPrev -nargs=1 NVPMPrev call g:nvpm.loop(-1,"<args>","<count>")
+command! -count -complete=custom,NVPMNextPrev -nargs=1 NVPMNext call g:nvpm.loop(+1,"<args>")
+command! -count -complete=custom,NVPMNextPrev -nargs=1 NVPMPrev call g:nvpm.loop(-1,"<args>")
 
 command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
 
