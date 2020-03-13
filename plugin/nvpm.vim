@@ -487,9 +487,11 @@ endfunction
 
 function! g:nvpm.line.init() "{
 
+  let top = '%y %m'
+  let bot = '%l,%c/%P'
   let self.visible     = 0
-  let self.topright    = get(g: , 'nvpm_line_topright'    , '%y %m'          )
-  let self.bottomright = get(g: , 'nvpm_line_bottomright' , '%-(%l,%c%V%)/%P')
+  let self.topright    = get(g: , 'nvpm_line_topright'    , top )
+  let self.bottomright = get(g: , 'nvpm_line_bottomright' , bot )
   let self.enclosure   = get(g: , 'nvpm_line_enclosure'   , 1                )
   let self.innerspace  = get(g: , 'nvpm_line_innerspace'  , 0                )
 
@@ -903,6 +905,5 @@ command! -nargs=0 NVPMTerminal call g:nvpm.term.edit()
 
 " Set project files filetype as nvpm
 execute 'au BufEnter *'. g:nvpm.dirs.path("proj") .'* set ft=nvpm'
-
 
 " AutoCommands }

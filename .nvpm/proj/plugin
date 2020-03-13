@@ -1,13 +1,23 @@
-// Meta    {
 
+
+# Meta    {
 workspace NVPM Docs
 
+  *tab Init
+    buff readme   : ~/.config/nvim/README.md
+    buff init.vim : ~/.config/nvim/init.vim
+
   tab main
-    buff nvpmdoc : doc/nvpm.txt
-    buff tags    : doc/tags
+    buff nvpmdoc  : doc/nvpm.txt
+    buff plugin   : plugin/nvpm.vim
+    buff init.vim : ~/.config/nvim/init.vim
+
+    *buff tags     : doc/tags
+    *buff oldshool : ~/.config/nvim/colors/oldschool.vim
+    *buff logo    : ../logo
+    *buff geo     : ../geometry.txt
     *buff readme  : README.md
     *buff help    : /usr/share/nvim/runtime/doc/helphelp.txt
-    *buff logo    : ../logo
 
   tab plugged
     buff DraIt   : ~/.config/nvim/plugged/DrawIt/doc/DrawIt.txt
@@ -17,16 +27,16 @@ workspace NVPM Docs
 
   *tab settings
     buff init.vim : ~/.config/nvim/init.vim
-    buff oldshool : ~/.config/nvim/colors/oldschool.vim
     buff license  : LICENSE
 
-// }
-// Plugin  {
+# }
+# Plugin  {
 
-workspace NVPM Plugin
+workspace NVPM Plugin 
 
   tab Main
     buff plugin   : plugin/nvpm.vim
+    *buff maps : /usr/share/nvim/runtime/doc/map.txt
     buff init.vim : ~/.config/nvim/init.vim
     *buff tasks    : task.txt
 
@@ -34,8 +44,8 @@ workspace NVPM Plugin
     buff syntax : syntax/nvpm.vim
     buff proj   : .nvpm/proj/plugin
 
-// }
-// VimDocs {
+# }
+# VimDocs {
 
 *workspace Docs
 
@@ -54,4 +64,4 @@ workspace NVPM Plugin
   tab Main
     term Ranger : ranger /usr/share/nvim/runtime/doc
 
-//}
+#}

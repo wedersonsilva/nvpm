@@ -12,6 +12,7 @@ Menu {
     *feat-root-dir*
 
   Issues
+    *project-file-path-with-..*
 
     Solved
       *load-deft-missing-folder*

@@ -10,7 +10,9 @@ syntax region nvpmprojdtabs start=/^\s*\*\s*tab/ end=/^\s*tab\|workspace/me=s-9
 syntax match  nvpmprojdbuff '^\s*\*\s*buff\s*\(.*\)'
 syntax match  nvpmprojdterm '^\s*\*\s*term\s*\(.*\)'
 
-syntax match  nvpmprojcomment '^\/\/.*$'
+" syntax match  nvpmprojcomment '^\/\/.*$'
+syntax match  nvpmprojcomment '^\s*\#.*'
+ 
 
 syntax match nvpmprojcommentnotes /\/\/\sNote:/he=e-1
 
