@@ -492,7 +492,7 @@ function! g:nvpm.line.init() "{
   let self.visible     = 0
   let self.topright    = get(g: , 'nvpm_line_topright'    , top )
   let self.bottomright = get(g: , 'nvpm_line_bottomright' , bot )
-  let self.enclosure   = get(g: , 'nvpm_line_enclosure'   , 1                )
+  let self.closure   = get(g: , 'nvpm_line_closure'   , 1                )
   let self.innerspace  = get(g: , 'nvpm_line_innerspace'  , 0                )
 
 endfunction "}
@@ -501,9 +501,9 @@ function! g:nvpm.line.topl() "{
   let space = self.innerspace ? ' ' : ''
   let line  = ''
   let line .= '%#NVPMLineWksp#'
-  let line .= self.enclosure ? ' ' : '('.space
+  let line .= self.closure ? '('.space : ' '
   let line .= g:nvpm.data.curr.item('w').name
-  let line .= self.enclosure ? ' ' : space.')'
+  let line .= self.closure ? ')'.space : ' '
   let line .= ' '
 
   let currtab = g:nvpm.data.curr.item('t')
@@ -512,9 +512,9 @@ function! g:nvpm.line.topl() "{
     let iscurr = tab.name == currtab.name
     let line  .= '%#NVPMLineTabs'
     let line  .= iscurr ? 'Sel#' : '#'
-    let line  .= self.enclosure || !iscurr ? ' '.space : '['.space
+    let line  .= self.closure && iscurr ? '['.space : ' '.space
     let line  .= tab.name
-    let line  .= self.enclosure || !iscurr ? ' '.space : space.']'
+    let line  .= self.closure && iscurr ? space.']' : ' '.space
   endfor
 
   let line .= '%#NVPMLineTabsFill#'
@@ -535,9 +535,9 @@ function! g:nvpm.line.botl() "{
     let iscurr = buf.name == currbuf.name
     let line  .= '%#NVPMLineBuff'
     let line  .= iscurr ? 'Sel#' : '#'
-    let line  .= self.enclosure || !iscurr ? ' '.space : '['.space
+    let line  .= self.closure && iscurr ? '['.space : ' '.space
     let line  .= buf.name
-    let line  .= self.enclosure || !iscurr ? ' '.space : space.']'
+    let line  .= self.closure && iscurr ? space.']' : ' '.space
   endfor
 
   let line .= '%#NVPMLinebuffFill#'

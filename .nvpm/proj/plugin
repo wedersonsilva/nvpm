@@ -3,9 +3,10 @@
 # Meta    {
 workspace NVPM Docs
 
-  *tab Init
-    buff readme   : ~/.config/nvim/README.md
+  tab Init
     buff init.vim : ~/.config/nvim/init.vim
+    buff old.vim : ~/.config/nvim/old.vim
+    buff plugin   : plugin/nvpm.vim
 
   tab main
     buff nvpmdoc  : doc/nvpm.txt
