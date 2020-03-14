@@ -3,10 +3,12 @@
 # Meta    {
 workspace NVPM Docs
 
-  tab Init
+  *tab Init
     buff init.vim : ~/.config/nvim/init.vim
     buff old.vim : ~/.config/nvim/old.vim
-    buff plugin   : plugin/nvpm.vim
+    *buff plugin   : plugin/nvpm.vim
+    buff packs   :/i/proj/soft/aih/packages.yml 
+    buff deop : ~/.config/nvim/init-deoplete.vim
 
   tab main
     buff nvpmdoc  : doc/nvpm.txt
